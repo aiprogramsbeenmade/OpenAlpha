@@ -51,7 +51,7 @@ def main() -> int:
     from openalpha.web.app import create_app
 
     try:
-        porta = _trova_porta_libera(5000)
+        porta = _trova_porta_libera(5001)
     except RuntimeError as exc:
         print(f"Errore: {exc}", file=sys.stderr)
         return 1

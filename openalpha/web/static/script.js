@@ -11,12 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const previewDiv = document.getElementById("preview");
     const historyList = document.getElementById("history-list");
     const clearHistoryButton = document.getElementById("clear-history");
+    const resultArea = document.querySelector(".result-area");
 
     let previewTimer = null;
 
     caricaOperazioni();
     setupTastiera();
     renderCronologia();
+    mostraEmptyState();
 
     // ---------------------------------------------------------------------
     // Caricamento operazioni
@@ -187,11 +189,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Esecuzione
     // ---------------------------------------------------------------------
 
-        async function esegui() {
+    async function esegui() {
         const raw = inputField.value.trim();
         if (!raw) return;
 
-        resultContent.innerHTML = '<p class="loading">Calcolo in corso...</p>';
+        resultContent.innerHTML = `
+            <div class="loading-container">
+                <span class="spinner"></span>
+                <span>Calcolo in corso...</span>
+            </div>
+        `;
 
         let operation, expression, params;
         const parsed = analizzaInput(raw);
@@ -205,13 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
             params = {};
         }
 
-        // Caso speciale: plot3d usa un endpoint dedicato.
         if (operation === "plot3d") {
             await eseguiPlot3D(expression, params, raw);
             return;
         }
-
-        // Caso speciale: plot (2D) usa un endpoint dedicato.
         if (operation === "plot") {
             await eseguiPlot2D(expression, params, raw);
             return;
@@ -219,6 +223,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
         await eseguiOperazione(operation, expression, params, raw);
     }
+
+    async function eseguiOperazione(operation, expression, params, rawForHistory) {
+        resultContent.innerHTML = `
+            <div class="loading-container">
+                <span class="spinner"></span>
+                <span>Calcolo in corso...</span>
+            </div>
+        `;
+
+        try {
+            const response = await fetch("/api/execute", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ operation, expression, params }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                mostraErrore(data.error || "Errore sconosciuto");
+                return;
+            }
+            mostraRisultato(data);
+            if (data.status !== "error") {
+                aggiungiAllaCronologia({
+                    operation,
+                    expression,
+                    params,
+                    raw: rawForHistory || expression,
+                    exact: data.exact,
+                });
+            }
+        } catch (err) {
+            mostraErrore("Errore di rete: " + err.message);
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Plot 2D
+    // ---------------------------------------------------------------------
 
     async function eseguiPlot2D(expression, params, rawForHistory) {
         try {
@@ -288,7 +330,17 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         Plotly.newPlot(container, [trace], layout, config);
+
+        if (resultArea) {
+            resultArea.classList.remove("fade-in");
+            void resultArea.offsetWidth;
+            resultArea.classList.add("fade-in");
+        }
     }
+
+    // ---------------------------------------------------------------------
+    // Plot 3D
+    // ---------------------------------------------------------------------
 
     async function eseguiPlot3D(expression, params, rawForHistory) {
         try {
@@ -327,7 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function mostraPlot3D(data) {
-        // Crea il contenitore per il plot.
         resultContent.innerHTML = `
             <p><strong>Operazione:</strong> plot3d</p>
             <p><strong>Stato:</strong> exact</p>
@@ -362,36 +413,19 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         Plotly.newPlot(container, [trace], layout, config);
-    }
-    async function eseguiOperazione(operation, expression, params, rawForHistory) {
-        try {
-            const response = await fetch("/api/execute", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ operation, expression, params }),
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                mostraErrore(data.error || "Errore sconosciuto");
-                return;
-            }
-            mostraRisultato(data);
-            // Aggiungi alla cronologia (solo se l'operazione è riuscita).
-            if (data.status !== "error") {
-                aggiungiAllaCronologia({
-                    operation,
-                    expression,
-                    params,
-                    raw: rawForHistory || expression,
-                    exact: data.exact,
-                });
-            }
-        } catch (err) {
-            mostraErrore("Errore di rete: " + err.message);
+
+        if (resultArea) {
+            resultArea.classList.remove("fade-in");
+            void resultArea.offsetWidth;
+            resultArea.classList.add("fade-in");
         }
     }
 
-        function mostraRisultato(data) {
+    // ---------------------------------------------------------------------
+    // Rendering del risultato
+    // ---------------------------------------------------------------------
+
+    function mostraRisultato(data) {
         let html = "";
         html += `<p><strong>Operazione:</strong> ${escapeHtml(data.operation)}</p>`;
         html += `<p><strong>Stato:</strong> ${escapeHtml(data.status)}</p>`;
@@ -446,7 +480,6 @@ document.addEventListener("DOMContentLoaded", () => {
             html += `<p class="error"><strong>Errore:</strong> ${escapeHtml(data.error)}</p>`;
         }
 
-        // Barra azioni (solo per risultati non di errore).
         if (data.status !== "error") {
             html += `<div class="action-bar">`;
             if (data.latex && data.latex.exact) {
@@ -459,16 +492,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 html += `<button class="action-btn" data-action="export-png" title="Esporta come PNG">PNG</button>`;
             }
             html += `<button class="action-btn" data-action="export-json" title="Esporta come JSON">JSON</button>`;
-            html += `<span class="action-feedback" id="action-feedback"></span>`;
             html += `</div>`;
         }
 
         resultContent.innerHTML = html;
 
-        // Salva i dati per le azioni successive.
-        resultContent.dataset.result = JSON.stringify(data);
+        if (resultArea) {
+            resultArea.classList.remove("fade-in");
+            void resultArea.offsetWidth;
+            resultArea.classList.add("fade-in");
+        }
 
-        // Setup dei pulsanti.
+        resultContent.dataset.result = JSON.stringify(data);
         setupAzioni(data);
 
         if (window.MathJax && window.MathJax.typesetPromise) {
@@ -479,39 +514,30 @@ document.addEventListener("DOMContentLoaded", () => {
     function setupAzioni(data) {
         document.querySelectorAll(".action-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
-                const action = btn.dataset.action;
-                eseguiAzione(action, data);
+                eseguiAzione(btn.dataset.action, data);
             });
         });
     }
 
     async function eseguiAzione(action, data) {
-        const feedback = document.getElementById("action-feedback");
-        const mostraFeedback = (msg) => {
-            if (!feedback) return;
-            feedback.textContent = msg;
-            feedback.classList.add("visible");
-            setTimeout(() => feedback.classList.remove("visible"), 2000);
-        };
-
         switch (action) {
             case "copy-latex": {
                 const latex = data.latex && data.latex.exact;
                 if (!latex) return;
                 try {
                     await navigator.clipboard.writeText(latex);
-                    mostraFeedback("LaTeX copiato!");
+                    mostraToast("LaTeX copiato negli appunti");
                 } catch (err) {
-                    mostraFeedback("Errore copia");
+                    mostraToast("Errore durante la copia", "error");
                 }
                 break;
             }
             case "copy-text": {
                 try {
                     await navigator.clipboard.writeText(data.exact || "");
-                    mostraFeedback("Testo copiato!");
+                    mostraToast("Risultato copiato negli appunti");
                 } catch (err) {
-                    mostraFeedback("Errore copia");
+                    mostraToast("Errore durante la copia", "error");
                 }
                 break;
             }
@@ -521,7 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.href = "data:image/png;base64," + data.plot_data;
                 link.download = "openalpha_plot_" + Date.now() + ".png";
                 link.click();
-                mostraFeedback("PNG scaricato!");
+                mostraToast("PNG scaricato");
                 break;
             }
             case "export-json": {
@@ -534,7 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.download = "openalpha_result_" + Date.now() + ".json";
                 link.click();
                 URL.revokeObjectURL(url);
-                mostraFeedback("JSON scaricato!");
+                mostraToast("JSON scaricato");
                 break;
             }
         }
@@ -569,7 +595,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function aggiungiAllaCronologia(entry) {
         const items = leggiCronologia();
-        // Evita duplicati immediati.
         const last = items[0];
         if (last && last.operation === entry.operation && last.expression === entry.expression) {
             return;
@@ -583,7 +608,6 @@ document.addEventListener("DOMContentLoaded", () => {
             timestamp: new Date().toISOString(),
         };
         items.unshift(newEntry);
-        // Limita a HISTORY_MAX.
         if (items.length > HISTORY_MAX) {
             items.length = HISTORY_MAX;
         }
@@ -651,11 +675,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function riEsegui(entry) {
         inputField.value = entry.raw || entry.expression;
         operationSelect.value = entry.operation;
-        // Aggiorna l'anteprima.
         if (previewTimer) clearTimeout(previewTimer);
         previewTimer = setTimeout(aggiornaAnteprima, 100);
-        // Esegui.
-        resultContent.innerHTML = '<p class="loading">Calcolo in corso...</p>';
+        resultContent.innerHTML = `
+            <div class="loading-container">
+                <span class="spinner"></span>
+                <span>Calcolo in corso...</span>
+            </div>
+        `;
         eseguiOperazione(entry.operation, entry.expression, entry.params || {}, entry.raw || entry.expression);
     }
 
@@ -663,8 +690,68 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("Pulire la cronologia?")) {
             scriviCronologia([]);
             renderCronologia();
+            mostraToast("Cronologia pulita");
         }
     });
+
+    // ---------------------------------------------------------------------
+    // Toast
+    // ---------------------------------------------------------------------
+
+    function mostraToast(message, type = "success") {
+        const existing = document.querySelector(".toast");
+        if (existing) existing.remove();
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.add("visible");
+        });
+
+        setTimeout(() => {
+            toast.classList.remove("visible");
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+
+    // ---------------------------------------------------------------------
+    // Empty state
+    // ---------------------------------------------------------------------
+
+    function mostraEmptyState() {
+        const esempi = [
+            { testo: "(x + 1)**2", op: "simplify" },
+            { testo: "x**2 - 1 = 0", op: "solve" },
+            { testo: "sin(x)/x", op: "limit" },
+            { testo: "plot(sin(x))", op: "plot" },
+        ];
+
+        let html = `
+            <div class="empty-state">
+                <p>Prova con un esempio:</p>
+                <div class="example-chips">
+        `;
+        esempi.forEach((es) => {
+            html += `<button class="example-chip" data-expr="${escapeHtml(es.testo)}">${escapeHtml(es.testo)}</button>`;
+        });
+        html += `
+                </div>
+            </div>
+        `;
+
+        resultContent.innerHTML = html;
+
+        document.querySelectorAll(".example-chip").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                inputField.value = btn.dataset.expr;
+                aggiornaAnteprima();
+                esegui();
+            });
+        });
+    }
 
     // ---------------------------------------------------------------------
     // Utils

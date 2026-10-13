@@ -44,3 +44,4 @@ openalpha_result_*.json
 
 # macOS
 .DS_Store
+openalpha/web/static/mathjax/

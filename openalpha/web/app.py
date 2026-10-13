@@ -275,6 +275,15 @@ def _genera_dati_plot2d(
 def create_app() -> Flask:
     """Crea e configura l'applicazione Flask."""
     app = Flask(__name__)
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+
+    @app.after_request
+    def _no_cache(response):
+        """Disabilita la cache HTTP per tutte le risposte."""
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
     @app.route("/")
     def index():
@@ -435,12 +444,11 @@ def _open_browser(url: str) -> None:
 
 def main() -> None:
     app = create_app()
-    url = "http://127.0.0.1:5000"
+    url = "http://127.0.0.1:5001"
     Timer(1.0, _open_browser, args=[url]).start()
     print(f"OpenAlpha — server locale avviato su {url}")
     print("Premi Ctrl+C per terminare.")
-    app.run(host="127.0.0.1", port=5000, debug=False)
-
+    app.run(host="127.0.0.1", port=5001, debug=False)
 
 if __name__ == "__main__":
     main()
