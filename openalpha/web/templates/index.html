@@ -11,10 +11,12 @@
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']],
             },
-            svg: { fontCache: 'global' },
+            svg: {
+                fontCache: 'global',
+            },
         };
     </script>
-    <script src="{{ url_for('static', filename='mathjax/tex-mml-chtml.js') }}" async></script>
+    <script src="{{ url_for('static', filename='mathjax/tex-svg.js') }}" async></script>
     <script src="{{ url_for('static', filename='plotly/plotly.min.js') }}"></script>
 </head>
 <body>

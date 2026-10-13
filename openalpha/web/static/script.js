@@ -319,7 +319,9 @@ document.addEventListener("DOMContentLoaded", () => {
             xaxis: { title: data.xvar, zeroline: true, zerolinecolor: "#d94b2b", zerolinewidth: 1 },
             yaxis: { title: "y", zeroline: true, zerolinecolor: "#d94b2b", zerolinewidth: 1 },
             margin: { l: 50, r: 20, t: 40, b: 40 },
-            autosize: true,
+            autosize: false,
+            width: container.offsetWidth || 700,
+            height: 400,
             hovermode: "closest",
         };
 
@@ -404,7 +406,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 zaxis: { title: "z" },
             },
             margin: { l: 0, r: 0, t: 40, b: 0 },
-            autosize: true,
+            autosize: false,
+            width: container.offsetWidth || 700,
+            height: 500,
         };
 
         const config = {
