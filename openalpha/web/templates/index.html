@@ -18,6 +18,7 @@
     </script>
     <script src="{{ url_for('static', filename='mathjax/tex-svg.js') }}" async></script>
     <script src="{{ url_for('static', filename='plotly/plotly.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='mathlive/mathlive.min.js') }}"></script>
 </head>
 <body>
     <header>
@@ -31,13 +32,30 @@
                 <select id="operation-select" title="Operazione">
                     <option value="simplify">simplify</option>
                 </select>
-                <input
-                    type="text"
-                    id="input-expression"
-                    placeholder="Scrivi un'espressione, es. (x + 1)**2"
-                    autocomplete="off"
-                    autofocus
-                >
+
+                <div class="input-mode-toggle" role="tablist" aria-label="Modalità di input">
+                    <button type="button" id="mode-text-btn" class="mode-btn active" data-mode="text" role="tab" aria-selected="true">Testo</button>
+                    <button type="button" id="mode-visual-btn" class="mode-btn" data-mode="visual" role="tab" aria-selected="false">Visuale</button>
+                </div>
+
+                <div class="input-slot" id="input-slot-text">
+                    <input
+                        type="text"
+                        id="input-expression"
+                        placeholder="Scrivi un'espressione, es. (x + 1)**2"
+                        autocomplete="off"
+                        autofocus
+                    >
+                </div>
+
+                <div class="input-slot" id="input-slot-visual" hidden>
+                    <math-field
+                        id="visual-editor"
+                        class="visual-editor"
+                        placeholder="Scrivi un'espressione, es. (x+1)^2"
+                    ></math-field>
+                </div>
+
                 <button id="calculate-button">Calcola</button>
             </div>
 
@@ -115,6 +133,6 @@
         </aside>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </body>
 </html>

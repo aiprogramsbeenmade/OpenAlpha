@@ -188,7 +188,19 @@ Output:
 - **macOS**: `dist/OpenAlpha.app`
 - **Windows**: `dist/OpenAlpha.exe`
 - **Linux**: `dist/OpenAlpha`
+### Scaricare MathJax e Plotly
 
+Dalla root del progetto:
+
+    # MathJax (per il rendering delle formule)
+    mkdir -p openalpha/web/static/mathjax
+    curl -L -o openalpha/web/static/mathjax/tex-svg.js \
+      https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+
+    # Plotly (per i grafici interattivi)
+    mkdir -p openalpha/web/static/plotly
+    curl -L -o openalpha/web/static/plotly/plotly.min.js \
+      https://cdn.plot.ly/plotly-2.35.2.min.js
 ### Note
 
 - **macOS**: al primo avvio, Gatekeeper potrebbe bloccare l'app.
@@ -198,6 +210,25 @@ Output:
   le dipendenze (SymPy, NumPy, Matplotlib, Flask, Plotly, ...).
 - Il bundle è **self-contained**: funziona su qualsiasi Mac con
   la stessa architettura, senza installare nulla.
+
+### Modalità di input
+
+L'interfaccia web supporta due modalità di input, commutabili con il
+toggle **Testo / Visuale** nella barra:
+
+- **Testo**: si scrive l'espressione in sintassi OpenAlpha
+  (`(x+1)**2`, `integrate(x**2, x)`, `solve(x**2 - 1 = 0)`).
+  È la modalità di default e funziona sempre.
+- **Visuale**: si scrive l'espressione in un editor matematico
+  interattivo (MathLive). L'editor produce la stessa sintassi
+  OpenAlpha internamente, quindi tutte le operazioni funzionano
+  in entrambe le modalità.
+
+La tastiera matematica (Basic, Calculus, Algebra, Trig, Plot)
+funziona in entrambe le modalità.
+
+Se MathLive non è disponibile, la modalità Visuale non si attiva
+e resta solo quella Testuale (fallback automatico).
 
 ## Filosofia
 

@@ -93,7 +93,13 @@ distribuita come applicazione standalone.
 
 ## Fase 5-bis — Rifiniture UI (in corso)
 
-- **T5.11** ⬜ Input visuale (barra che renderizza formule come WA)
+- **T5.11** 🚧 Input visuale (barra che renderizza formule come WA)
+  - **T5.11a** ✅ Toggle testo/visuale + fallback (infrastruttura)
+  - **T5.11b** ✅ Setup MathLive (file statici, include, boot)
+  - **T5.11c** ✅ Sostituzione `<input>` con `<math-field>` in modalità visuale
+  - **T5.11d** ✅ Tastiera matematica nell'editor visuale
+  - **T5.11e** ✅ Adattamento `analizzaInput` / cronologia
+  - **T5.11f** 🚧 Test manuali, pulizia, documentazione
 - **T5.12** 🚧 Rifinitura estetica
 
 ---
@@ -111,15 +117,9 @@ distribuita come applicazione standalone.
 
 ## Stato attuale
 
-**Fase:** 5 — chiusa. In corso: rifiniture UI (T5.12).
-**Ultimo task chiuso:** T5.10
-**Prossimo task:** T5.12 (rifinitura estetica)
+**Ultimo task chiuso:** T5.11e
+**Prossimo task:** T5.11f (rifinitura finale di T5.11)
 
-**Numeri:**
-- 520 test verdi.
-- 12 operazioni disponibili.
-- 2 interfacce: CLI (`python -m openalpha`) e web UI (`python -m openalpha.web`).
-- Bundle `.app` funzionante.
 
 ---
 
@@ -158,6 +158,11 @@ distribuita come applicazione standalone.
   MathJax, Plotly, tastiera matematica, cronologia, esportazione,
   bundle `.app`. 520 test verdi.
 - **2026-10-13**: inizio rifiniture UI (T5.12).
+- - **2026-10-13**: T5.11a (toggle testo/visuale) completato. 526 test verdi.
+- - **2026-10-13**: T5.11b (setup MathLive) completato. 526 test verdi.
+- **2026-10-13**: T5.11c (integrazione `<math-field>` in modalità visuale) completato. 526 test verdi.
+- **2026-10-13**: T5.11d (tastiera nell'editor visuale) completato. 526 test verdi.
+- **2026-10-13**: T5.11d (tastiera in editor visuale) e T5.11e (round-trip testo/visuale stabile) completati. 526 test verdi.
 
 ---
 
@@ -177,6 +182,14 @@ distribuita come applicazione standalone.
   (base64 per i grafici, LaTeX per il rendering).
 - **Bundle**: PyInstaller include Python, dipendenze, e file statici.
   Il bundle è self-contained (~200 MB).
+- **Input visuale (T5.11)**: Scelta: **MathLive** (MIT, ~500 KB), editor strutturato WYSIWYG
+(math-field). L'editor **convive** con la barra testuale: toggle
+"Testo / Visuale". La tastiera matematica resta, ma inserisce
+nell'editor attivo. Fallback obbligatorio: se MathLive non carica,
+la modalità testo resta disponibile. MathLive 0.101.2 scaricato localmente in `static/mathlive/`
+(~1 MB, MIT). La tastiera virtuale nativa di MathLive è
+**disabilitata**: OpenAlpha usa la propria tastiera matematica.
+I suoni di MathLive non sono inclusi.
 
 ### Visualizzazione 3D interattiva
 

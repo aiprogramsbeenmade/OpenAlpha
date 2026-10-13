@@ -3,7 +3,9 @@
 const HISTORY_KEY = "openalpha_history";
 const HISTORY_MAX = 50;
 
-document.addEventListener("DOMContentLoaded", () => {
+function initOpenAlpha() {
+
+
     const inputField = document.getElementById("input-expression");
     const calculateButton = document.getElementById("calculate-button");
     const resultContent = document.getElementById("result-content");
@@ -13,12 +15,211 @@ document.addEventListener("DOMContentLoaded", () => {
     const clearHistoryButton = document.getElementById("clear-history");
     const resultArea = document.querySelector(".result-area");
 
+    const modeTextBtn = document.getElementById("mode-text-btn");
+    const modeVisualBtn = document.getElementById("mode-visual-btn");
+    const inputSlotText = document.getElementById("input-slot-text");
+    const inputSlotVisual = document.getElementById("input-slot-visual");
+
+    const visualEditor = document.getElementById("visual-editor");
+
+    // Disabilita la tastiera virtuale nativa di MathLive:
+    // OpenAlpha usa la propria tastiera matematica.
+    if (window.mathVirtualKeyboard) {
+        window.mathVirtualKeyboard.mode = "off";
+    }
+
     let previewTimer = null;
 
-    caricaOperazioni();
-    setupTastiera();
-    renderCronologia();
-    mostraEmptyState();
+    // ---------------------------------------------------------------------
+    // Modalità di input (testo / visuale)
+    // ---------------------------------------------------------------------
+
+    let currentExpression = "";
+
+    let activeMode = "text"; // "text" | "visual"
+
+    function getActiveMode() {
+        return activeMode;
+    }
+
+    function getExpression() {
+        if (activeMode === "text") {
+            return inputField.value;
+        }
+        if (visualEditor) {
+            // MathLive 0.101.2: "text" non è un formato valido.
+            // "ascii-math" produce sintassi matematica informale
+            // (es. "(x+1)^2", "sqrt(2)") che convertiamo in sintassi
+            // OpenAlpha. "latex" produrrebbe "\frac{}{}", "\sqrt{}",
+            // che il parser OpenAlpha non accetta.
+            let raw = "";
+            try {
+                raw = visualEditor.getValue("ascii-math") || "";
+            } catch (err) {
+                console.warn("[OpenAlpha] getValue('ascii-math') fallito, fallback su 'latex':", err);
+                try {
+                    raw = visualEditor.getValue("latex") || "";
+                } catch (err2) {
+                    console.error("[OpenAlpha] getValue fallito del tutto:", err2);
+                    raw = visualEditor.value || "";
+                }
+            }
+            return convertMathLiveToOpenAlpha(raw);
+        }
+        return currentExpression;
+    }
+
+    function setExpression(value) {
+        currentExpression = value ?? "";
+        if (activeMode === "text") {
+            inputField.value = currentExpression;
+        } else if (visualEditor) {
+            // Converte la sintassi OpenAlpha in LaTeX prima di
+            // scrivere nell'editor MathLive. Altrimenti MathLive
+            // interpreta `**` come due asterischi e rende male.
+            const latex = convertOpenAlphaToMathLive(currentExpression).mathlive;
+            visualEditor.value = latex;
+        }
+    }
+
+    function setActiveMode(mode) {
+        if (mode !== "text" && mode !== "visual") return;
+        if (mode === activeMode) return;
+
+        const previous = getExpression();
+
+        activeMode = mode;
+        currentExpression = previous;
+
+        if (mode === "text") {
+            inputSlotText.hidden = false;
+            inputSlotVisual.hidden = true;
+            modeTextBtn.classList.add("active");
+            modeTextBtn.setAttribute("aria-selected", "true");
+            modeVisualBtn.classList.remove("active");
+            modeVisualBtn.setAttribute("aria-selected", "false");
+            inputField.value = currentExpression;
+            inputField.focus();
+        } else {
+            inputSlotText.hidden = true;
+            inputSlotVisual.hidden = false;
+            modeTextBtn.classList.remove("active");
+            modeTextBtn.setAttribute("aria-selected", "false");
+            modeVisualBtn.classList.add("active");
+            modeVisualBtn.setAttribute("aria-selected", "true");
+            if (visualEditor) {
+                // Stessa conversione di setExpression: da OpenAlpha a LaTeX.
+                const latex = convertOpenAlphaToMathLive(currentExpression).mathlive;
+                visualEditor.value = latex;
+                visualEditor.focus();
+            }
+        }
+
+        if (previewTimer) clearTimeout(previewTimer);
+        previewTimer = setTimeout(aggiornaAnteprima, 100);
+    }
+
+    modeTextBtn.addEventListener("click", () => setActiveMode("text"));
+    modeVisualBtn.addEventListener("click", () => setActiveMode("visual"));
+
+    // ---------------------------------------------------------------------
+    // Conversione MathLive -> sintassi OpenAlpha
+    // ---------------------------------------------------------------------
+
+        function convertMathLiveToOpenAlpha(raw) {
+        if (!raw) return "";
+        let s = raw.trim();
+
+        // Normalizza spazi unicode e simboli comuni.
+        s = s.replace(/\u00A0/g, " ");
+        s = s.replace(/×/g, "*");
+        s = s.replace(/÷/g, "/");
+        s = s.replace(/−/g, "-");
+
+        // Residui LaTeX: \left( \right) \cdot \times \div
+        s = s.replace(/\\left\s*\(/g, "(");
+        s = s.replace(/\\right\s*\)/g, ")");
+        s = s.replace(/\\left\s*\[/g, "(");
+        s = s.replace(/\\right\s*\]/g, ")");
+        s = s.replace(/\\cdot/g, "*");
+        s = s.replace(/\\times/g, "*");
+        s = s.replace(/\\div/g, "/");
+
+        // Frazioni LaTeX: \frac{a}{b} -> (a)/(b)
+        s = s.replace(/\\frac\s*\{([^}]*)\}\s*\{([^}]*)\}/g, "($1)/($2)");
+
+        // Radici LaTeX: \sqrt{a} -> sqrt(a)
+        s = s.replace(/\\sqrt\s*\{([^}]*)\}/g, "sqrt($1)");
+
+        // Funzioni LaTeX: \sin -> sin, \cos -> cos, ecc.
+        s = s.replace(/\\(sin|cos|tan|asin|acos|atan|log|ln|exp|abs)/g, "$1");
+
+        // Simboli greci comuni.
+        s = s.replace(/\\pi/g, "pi");
+        s = s.replace(/\\alpha/g, "alpha");
+        s = s.replace(/\\beta/g, "beta");
+        s = s.replace(/\\theta/g, "theta");
+        s = s.replace(/\\lambda/g, "lambda");
+
+        // Potenza: `^` -> `**`. Va fatto dopo i replace LaTeX,
+        // altrimenti si rischia di toccare `**` già presenti.
+        s = s.replace(/\^\{([^}]*)\}/g, "**($1)");
+        s = s.replace(/\^\(([^)]*)\)/g, "**($1)");
+        s = s.replace(/\^([0-9a-zA-Z])/g, "**$1");
+
+        // Radice unicode.
+        s = s.replace(/√/g, "sqrt");
+
+        // Pi greco unicode.
+        s = s.replace(/π/g, "pi");
+
+        // Pulizia spazi multipli.
+        s = s.replace(/\s+/g, " ").trim();
+
+        return s;
+    }
+        // ---------------------------------------------------------------------
+    // Conversione OpenAlpha -> LaTeX (per inserimento in MathLive)
+    // ---------------------------------------------------------------------
+    //
+    // I frammenti della tastiera sono in sintassi OpenAlpha. MathLive
+    // si aspetta LaTeX per il rendering. Questa funzione converte i
+    // frammenti semplici (potenze, sqrt, pi, sin, ecc.) in LaTeX, e
+    // lascia invariati i frammenti "complessi" (integrate, diff, ecc.)
+    // che MathLive renderizza come testo e riesporta identici.
+    //
+    // Restituisce { mathlive, openAlpha }:
+    //   mathlive: stringa LaTeX (o testo) da passare a mathfield.insert()
+    //   openAlpha: stringa OpenAlpha "equivalente" dopo l'inserimento
+    //              (usata per aggiornare lo stato interno)
+        function convertOpenAlphaToMathLive(text) {
+        if (!text) return { mathlive: "", openAlpha: "" };
+
+        let s = text;
+
+        // Converti SEMPRE `**` -> `^`, anche dentro le chiamate
+        // di operazione (integrate, diff, ecc.). MathLive interpreta
+        // `^` come apice; `**` come doppio apice vuoto, che rompe
+        // la formula e produce `****` al round-trip.
+        s = s.replace(/\*\*/g, "^");
+
+        // Radice quadrata: sqrt(x) -> \sqrt{x}.
+        s = s.replace(/sqrt\(([^)]*)\)/g, "\\sqrt{$1}");
+
+        // Pi greco.
+        s = s.replace(/\bpi\b/g, "\\pi");
+
+        // Funzioni trigonometriche e logaritmiche.
+        s = s.replace(/\b(sin|cos|tan|asin|acos|atan|log|ln|exp|abs)\(/g, "\\$1(");
+
+        // Simboli greci comuni.
+        s = s.replace(/\balpha\b/g, "\\alpha");
+        s = s.replace(/\bbeta\b/g, "\\beta");
+        s = s.replace(/\btheta\b/g, "\\theta");
+        s = s.replace(/\blambda\b/g, "\\lambda");
+
+        return { mathlive: s, openAlpha: text };
+    }
 
     // ---------------------------------------------------------------------
     // Caricamento operazioni
@@ -66,7 +267,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function inserisciFrammento(text, cursorOffset) {
+        function inserisciFrammento(text, cursorOffset) {
+        if (activeMode === "text") {
+            inserisciInTesto(text, cursorOffset);
+        } else if (activeMode === "visual") {
+            inserisciInVisuale(text, cursorOffset);
+        }
+    }
+
+    function inserisciInTesto(text, cursorOffset) {
         const start = inputField.selectionStart ?? inputField.value.length;
         const end = inputField.selectionEnd ?? inputField.value.length;
         const before = inputField.value.substring(0, start);
@@ -86,17 +295,73 @@ document.addEventListener("DOMContentLoaded", () => {
         previewTimer = setTimeout(aggiornaAnteprima, 300);
     }
 
+    function inserisciInVisuale(text, cursorOffset) {
+        if (!visualEditor) return;
+
+        // Converte il frammento OpenAlpha in LaTeX per MathLive.
+        // Per frammenti "complessi" (integrate, diff, ecc.) la conversione
+        // è identità: MathLive li renderizza come testo e li riesporta
+        // identici con getValue("ascii-math").
+        const latex = convertOpenAlphaToMathLive(text);
+        const openAlphaAfter = latex.openAlpha;
+
+        try {
+            visualEditor.insert(latex.mathlive);
+        } catch (err) {
+            console.error("[OpenAlpha] insert MathLive fallito:", err);
+            return;
+        }
+
+        // Posiziona il cursore se richiesto.
+        if (cursorOffset !== 0) {
+            // MathLive non espone un'API diretta per spostare il cursore
+            // di N posizioni. Usiamo executeCommand("moveToMathfieldEnd")
+            // come fallback per ora, e gestiamo il posizionamento fine
+            // in T5.11e.
+            try {
+                if (cursorOffset < 0) {
+                    // Sposta indietro il cursore di |cursorOffset| posizioni.
+                    // MathLive non ha un comando diretto, quindi spostiamo
+                    // a fine campo e poi muoviamo indietro.
+                    for (let i = 0; i < Math.abs(cursorOffset); i++) {
+                        visualEditor.executeCommand("moveToPreviousChar");
+                    }
+                }
+            } catch (err) {
+                console.warn("[OpenAlpha] posizionamento cursore fallito:", err);
+            }
+        }
+
+        visualEditor.focus();
+
+        // Aggiorna currentExpression e anteprima.
+        currentExpression = getExpression();
+        if (previewTimer) clearTimeout(previewTimer);
+        previewTimer = setTimeout(aggiornaAnteprima, 300);
+    }
+
     // ---------------------------------------------------------------------
     // Anteprima
     // ---------------------------------------------------------------------
 
     inputField.addEventListener("input", () => {
+        if (activeMode !== "text") return;
+        currentExpression = inputField.value;
         if (previewTimer) clearTimeout(previewTimer);
         previewTimer = setTimeout(aggiornaAnteprima, 300);
     });
 
+    if (visualEditor) {
+        visualEditor.addEventListener("input", () => {
+            if (activeMode !== "visual") return;
+            currentExpression = getExpression();
+            if (previewTimer) clearTimeout(previewTimer);
+            previewTimer = setTimeout(aggiornaAnteprima, 300);
+        });
+    }
+
     async function aggiornaAnteprima() {
-        const expr = inputField.value.trim();
+        const expr = getExpression().trim();
         if (!expr) {
             previewDiv.innerHTML = "";
             return;
@@ -190,7 +455,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ---------------------------------------------------------------------
 
     async function esegui() {
-        const raw = inputField.value.trim();
+        const raw = getExpression().trim();
         if (!raw) return;
 
         resultContent.innerHTML = `
@@ -677,7 +942,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function riEsegui(entry) {
-        inputField.value = entry.raw || entry.expression;
+        setExpression(entry.raw || entry.expression);
         operationSelect.value = entry.operation;
         if (previewTimer) clearTimeout(previewTimer);
         previewTimer = setTimeout(aggiornaAnteprima, 100);
@@ -750,7 +1015,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.querySelectorAll(".example-chip").forEach((btn) => {
             btn.addEventListener("click", () => {
-                inputField.value = btn.dataset.expr;
+                setExpression(btn.dataset.expr);
                 aggiornaAnteprima();
                 esegui();
             });
@@ -772,4 +1037,23 @@ document.addEventListener("DOMContentLoaded", () => {
     inputField.addEventListener("keydown", (event) => {
         if (event.key === "Enter") esegui();
     });
-});
+
+    // ---------------------------------------------------------------------
+    // Avvio
+    // ---------------------------------------------------------------------
+
+    caricaOperazioni();
+    setupTastiera();
+    renderCronologia();
+    mostraEmptyState();
+}
+
+// Avvia l'app: se il DOM è già pronto, esegui subito; altrimenti
+// aspetta DOMContentLoaded. Necessario perché con MathLive caricato
+// nell'<head>, il parsing può ritardare l'esecuzione di questo script
+// fino a dopo l'evento DOMContentLoaded.
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initOpenAlpha);
+} else {
+    initOpenAlpha();
+}

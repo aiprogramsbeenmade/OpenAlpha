@@ -45,3 +45,6 @@ openalpha_result_*.json
 # macOS
 .DS_Store
 openalpha/web/static/mathjax/
+openalpha/web/static/plotly/
+openalpha/web/static/mathlive/
+sounds/
