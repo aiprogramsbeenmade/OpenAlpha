@@ -1,0 +1,8 @@
+# OpenAlpha — dipendenze di sviluppo
+-r requirements.txt
+
+pytest>=8.0
+pytest-cov>=5.0
+ruff>=0.6
+mypy>=1.10
+pyinstaller>=6.0

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAlpha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            svg: { fontCache: 'global' },
+        };
+    </script>
+    <script src="{{ url_for('static', filename='mathjax/tex-mml-chtml.js') }}" async></script>
+    <script src="{{ url_for('static', filename='plotly/plotly.min.js') }}"></script>
+</head>
+<body>
+    <header>
+        <h1>OpenAlpha</h1>
+        <p class="subtitle">Calcolatore matematico locale</p>
+    </header>
+
+    <div class="layout">
+        <main class="main-column">
+            <div class="input-bar">
+                <select id="operation-select" title="Operazione">
+                    <option value="simplify">simplify</option>
+                </select>
+                <input
+                    type="text"
+                    id="input-expression"
+                    placeholder="Scrivi un'espressione, es. (x + 1)**2"
+                    autocomplete="off"
+                    autofocus
+                >
+                <button id="calculate-button">Calcola</button>
+            </div>
+
+            <div class="keyboard">
+                <div class="keyboard-tabs">
+                    <button class="tab active" data-tab="basic">Basic</button>
+                    <button class="tab" data-tab="calculus">Calculus</button>
+                    <button class="tab" data-tab="algebra">Algebra</button>
+                    <button class="tab" data-tab="trig">Trig</button>
+                    <button class="tab" data-tab="plot">Plot</button>
+                </div>
+
+                <div class="keyboard-panel active" data-panel="basic">
+                    <button data-insert="**2">x²</button>
+                    <button data-insert="sqrt()" data-cursor-offset="-1">√</button>
+                    <button data-insert="pi">π</button>
+                    <button data-insert="e">e</button>
+                    <button data-insert="(">(</button>
+                    <button data-insert=")">)</button>
+                    <button data-insert="+">+</button>
+                    <button data-insert="-">−</button>
+                    <button data-insert="*">×</button>
+                    <button data-insert="/">÷</button>
+                    <button data-insert="**">^</button>
+                </div>
+
+                <div class="keyboard-panel" data-panel="calculus">
+                    <button data-insert="integrate(, x)" data-cursor-offset="-4">∫</button>
+                    <button data-insert="diff(, x)" data-cursor-offset="-4">d/dx</button>
+                    <button data-insert="limit(, x, 0)" data-cursor-offset="-7">lim</button>
+                </div>
+
+                <div class="keyboard-panel" data-panel="algebra">
+                    <button data-insert="solve()" data-cursor-offset="-1">solve</button>
+                    <button data-insert="solve_system()" data-cursor-offset="-1">system</button>
+                    <button data-insert="nsolve()" data-cursor-offset="-1">nsolve</button>
+                    <button data-insert="=">=</button>
+                </div>
+
+                <div class="keyboard-panel" data-panel="trig">
+                    <button data-insert="sin()" data-cursor-offset="-1">sin</button>
+                    <button data-insert="cos()" data-cursor-offset="-1">cos</button>
+                    <button data-insert="tan()" data-cursor-offset="-1">tan</button>
+                    <button data-insert="asin()" data-cursor-offset="-1">sin⁻¹</button>
+                    <button data-insert="acos()" data-cursor-offset="-1">cos⁻¹</button>
+                    <button data-insert="atan()" data-cursor-offset="-1">tan⁻¹</button>
+                    <button data-insert="log()" data-cursor-offset="-1">log</button>
+                    <button data-insert="exp()" data-cursor-offset="-1">exp</button>
+                </div>
+
+                <div class="keyboard-panel" data-panel="plot">
+                    <button data-insert="plot()" data-cursor-offset="-1">plot 2D</button>
+                    <button data-insert="plot3d()" data-cursor-offset="-1">plot 3D</button>
+                </div>
+            </div>
+
+            <div id="preview" class="preview"></div>
+
+            <section class="result-area">
+                <h2>Risultato</h2>
+                <div id="result-content">
+                    <p class="placeholder">In attesa di un calcolo...</p>
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Cronologia</h2>
+                <button id="clear-history" title="Pulisci cronologia">Pulisci</button>
+            </div>
+            <ul id="history-list" class="history-list">
+                <!-- Riempita dinamicamente da script.js -->
+            </ul>
+        </aside>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
