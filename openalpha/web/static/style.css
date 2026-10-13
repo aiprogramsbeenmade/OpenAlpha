@@ -884,3 +884,69 @@ header .subtitle {
     outline: none;
     box-shadow: none;
 }
+/* =======================================================================
+ * 14. Icone (Lucide, SVG inline)
+ * ======================================================================= */
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.icon-lg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Bottoni con icona + testo: layout orizzontale */
+.input-bar button,
+.input-mode-toggle .mode-btn,
+.sidebar-header button,
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* Il pulsante "Calcola" ha un gap più ampio */
+#calculate-button {
+    gap: var(--space-2);
+}
+
+/* Il pulsante "Pulisci" è più piccolo: meno gap */
+.sidebar-header button {
+    gap: var(--space-1);
+}
+
+/* I bottoni azione hanno gap piccolo */
+.action-btn {
+    gap: var(--space-1);
+}
+
+/* Toast con icona + testo */
+.toast {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* Empty state: icona grande sopra al testo */
+.empty-state-icon {
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: center;
+    opacity: 0.7;
+}
+
+.empty-state-icon .icon {
+    width: 48px;
+    height: 48px;
+}
+
+/* Toggle: le icone sono più piccole, allineate al testo */
+.input-mode-toggle .mode-btn .icon {
+    width: 14px;
+    height: 14px;
+}

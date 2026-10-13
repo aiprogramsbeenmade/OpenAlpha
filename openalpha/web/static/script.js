@@ -5,6 +5,20 @@ const HISTORY_MAX = 50;
 
 function initOpenAlpha() {
 
+    // ---------------------------------------------------------------------
+    // Icone (SVG inline, da Lucide — ISC license)
+    // ---------------------------------------------------------------------
+
+    const ICONS = {
+        latex: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"/><path d="M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"/></svg>',
+        text: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/></svg>',
+        png: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>',
+        json: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><path d="M14 22h4a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v6"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M5 14a1 1 0 0 0-1 1v2a1 1 0 0 1-1 1 1 1 0 0 1 1 1v2a1 1 0 0 0 1 1"/><path d="M9 22a1 1 0 0 0 1-1v-2a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-2a1 1 0 0 0-1-1"/></svg>',
+        check: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+        x: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+        broom: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-lg" aria-hidden="true"><path d="M11 2v2"/><path d="M12 3h-2"/><path d="M13.5 10.5 22 2"/><path d="M14.734 13.841a2 2 0 00-.314-2.42L12.58 9.58a2 2 0 00-2.421-.314l-7.657 4.461A1 1 0 002.3 15.3l6.403 6.403a1 1 0 001.571-.204z"/><path d="M20 15v4"/><path d="M22 17h-4"/><path d="M4 4v4"/><path d="m5 18 2-2"/><path d="M6 6H2"/><path d="m7.699 10.7 5.602 5.601"/></svg>',
+    };
+
 
     const inputField = document.getElementById("input-expression");
     const calculateButton = document.getElementById("calculate-button");
@@ -752,15 +766,15 @@ function initOpenAlpha() {
         if (data.status !== "error") {
             html += `<div class="action-bar">`;
             if (data.latex && data.latex.exact) {
-                html += `<button class="action-btn" data-action="copy-latex" title="Copia LaTeX">LaTeX</button>`;
+                html += `<button class="action-btn" data-action="copy-latex" title="Copia LaTeX">${ICONS.latex}<span>LaTeX</span></button>`;
             }
             if (data.exact) {
-                html += `<button class="action-btn" data-action="copy-text" title="Copia come testo">Testo</button>`;
+                html += `<button class="action-btn" data-action="copy-text" title="Copia come testo">${ICONS.text}<span>Testo</span></button>`;
             }
             if (data.plot_data) {
-                html += `<button class="action-btn" data-action="export-png" title="Esporta come PNG">PNG</button>`;
+                html += `<button class="action-btn" data-action="export-png" title="Esporta come PNG">${ICONS.png}<span>PNG</span></button>`;
             }
-            html += `<button class="action-btn" data-action="export-json" title="Esporta come JSON">JSON</button>`;
+            html += `<button class="action-btn" data-action="export-json" title="Esporta come JSON">${ICONS.json}<span>JSON</span></button>`;
             html += `</div>`;
         }
 
@@ -973,7 +987,8 @@ function initOpenAlpha() {
 
         const toast = document.createElement("div");
         toast.className = `toast ${type}`;
-        toast.textContent = message;
+        const icon = type === "error" ? ICONS.x : ICONS.check;
+        toast.innerHTML = `${icon}<span>${escapeHtml(message)}</span>`;
         document.body.appendChild(toast);
 
         requestAnimationFrame(() => {
@@ -1000,6 +1015,7 @@ function initOpenAlpha() {
 
         let html = `
             <div class="empty-state">
+                <div class="empty-state-icon">${ICONS.broom}</div>
                 <p>Prova con un esempio:</p>
                 <div class="example-chips">
         `;

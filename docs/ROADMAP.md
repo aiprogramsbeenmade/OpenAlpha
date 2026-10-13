@@ -91,17 +91,33 @@ distribuita come applicazione standalone.
 
 ---
 
-## Fase 5-bis — Rifiniture UI (in corso)
+## Fase 5-bis — Rifiniture UI ✅
 
-- **T5.11** 🚧 Input visuale (barra che renderizza formule come WA)
+- **T5.11** ✅ Input visuale (barra che renderizza formule come WA)
   - **T5.11a** ✅ Toggle testo/visuale + fallback (infrastruttura)
   - **T5.11b** ✅ Setup MathLive (file statici, include, boot)
   - **T5.11c** ✅ Sostituzione `<input>` con `<math-field>` in modalità visuale
   - **T5.11d** ✅ Tastiera matematica nell'editor visuale
   - **T5.11e** ✅ Adattamento `analizzaInput` / cronologia
-  - **T5.11f** 🚧 Test manuali, pulizia, documentazione
-- **T5.12** 🚧 Rifinitura estetica
+  - **T5.11f** ✅ Test manuali, pulizia, documentazione
+- **T5.12** ✅ Rifinitura estetica
+  - **T5.12a** ✅ Palette e tipografia
+  - **T5.12b** ✅ Layout e responsive
+  - **T5.12c** ✅ Animazioni e stati
+  - **T5.12d** ✅ Iconografia (Lucide)
+---
 
+## Fase 5-ter — Miglioramenti UI futuri ⬜
+
+- **T5.13** ⬜ Plot 2D con dominio dinamico (zoom/pan rilancia il calcolo)
+  - **T5.13a** ⬜ Listener `plotly_relayout` + debounce
+  - **T5.13b** ⬜ Adattamento dinamico di `n_points`
+  - **T5.13c** ⬜ Reset del range al rifare il calcolo
+  - **T5.13d** ⬜ Gestione asintoti e casi limite
+  - **T5.13e** ⬜ Test manuali
+- **T5.14** ⬜ Plot 2D/3D con range configurabile dall'utente
+  (`plot(f, xmin, xmax)`, `plot3d(f, xmin, xmax, ymin, ymax)`)
+- **T5.15** ⬜ UI dedicata per i parametri di plot (campi xmin, xmax, ecc.)
 ---
 
 ## Fase 6 — Estensioni future ⬜
@@ -117,9 +133,9 @@ distribuita come applicazione standalone.
 
 ## Stato attuale
 
-**Ultimo task chiuso:** T5.11e
-**Prossimo task:** T5.11f (rifinitura finale di T5.11)
-
+**Fase:** 5 — chiusa. Fase 5-bis — chiusa. Prossimo: Fase 6 o Fase 5-ter.
+**Ultimo task chiuso:** T5.12d
+**Prossimo task:** da decidere (Fase 6 o Fase 5-ter)
 
 ---
 
@@ -127,8 +143,6 @@ distribuita come applicazione standalone.
 
 - [2026-10-13] **Input visuale (T5.11)**: barra renderizzata come WA.
   Opzionale, complesso. Da valutare dopo T5.12.
-- [2026-10-13] **Rifinitura estetica (T5.12)**: layout, tipografia,
-  colori, spaziature. Non aggiunge funzionalità.
 - [2026-10-13] **Commit Git**: rimandato.
 - [2026-10-13] **Firma del codice**: il bundle `.app` non è firmato.
   Gatekeeper lo blocca al primo avvio. L'utente deve autorizzare
@@ -163,6 +177,7 @@ distribuita come applicazione standalone.
 - **2026-10-13**: T5.11c (integrazione `<math-field>` in modalità visuale) completato. 526 test verdi.
 - **2026-10-13**: T5.11d (tastiera nell'editor visuale) completato. 526 test verdi.
 - **2026-10-13**: T5.11d (tastiera in editor visuale) e T5.11e (round-trip testo/visuale stabile) completati. 526 test verdi.
+- **2026-10-13**: T5.12d (iconografia Lucide) completato. Fase 5-bis chiusa. 526 test verdi.
 
 ---
 
