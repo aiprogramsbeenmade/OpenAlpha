@@ -16,7 +16,7 @@ condivide lo stesso pattern:
 
 from __future__ import annotations
 
-from typing import Callable
+from typing import Any, Callable
 
 import sympy
 
@@ -35,9 +35,10 @@ from openalpha.core.approximation import compute_approximate
 def apply_sympy_operation(
     input_expression: str,
     operation_name: str,
-    func: Callable[[sympy.Expr], sympy.Expr],
+    func: Callable[..., sympy.Expr],
     *,
     engine_error_message: str = "Errore interno durante il calcolo",
+    **func_kwargs: Any,
 ) -> Result:
     """Applica una funzione SymPy a un'espressione e restituisce un ``Result``.
 
@@ -50,7 +51,9 @@ def apply_sympy_operation(
         input_expression: espressione come stringa.
         operation_name: nome dell'operazione.
         func: funzione SymPy da applicare per il risultato finale.
+            Può accettare argomenti extra tramite ``func_kwargs``.
         engine_error_message: messaggio per errori imprevisti.
+        **func_kwargs: argomenti extra da passare a ``func``.
 
     Returns:
         Un ``Result`` con ``exact``, ``steps``, ``conditions`` popolati
@@ -60,7 +63,7 @@ def apply_sympy_operation(
         expr = parse_expression(input_expression)
         conditions = collect_conditions(expr)
         explanation = explain(expr)
-        result_expr = func(expr)
+        result_expr = func(expr, **func_kwargs)
         exact_str = str(result_expr)
 
         status = ResultStatus.PARTIAL if conditions else ResultStatus.EXACT

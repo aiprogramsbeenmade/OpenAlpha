@@ -234,6 +234,10 @@ def _execute_with_params(
         )
     if operation == "dsolve":
         return func(expression)
+    if operation == "apart":
+        return func(expression, var=params.get("var", "x"))
+    if operation == "collect":
+        return func(expression, var=params.get("var", "x"))
 
     return func(expression)
 

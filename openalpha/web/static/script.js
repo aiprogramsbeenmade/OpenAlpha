@@ -503,6 +503,32 @@ function initOpenAlpha() {
                 regex: /^\s*dsolve\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
+                        {
+                name: "collect",
+                regex: /^\s*collect\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: m[2] ? { var: m[2] } : {},
+                }),
+            },
+            {
+                name: "apart",
+                regex: /^\s*apart\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: m[2] ? { var: m[2] } : {},
+                }),
+            },
+            {
+                name: "together",
+                regex: /^\s*together\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "cancel",
+                regex: /^\s*cancel\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
         ];
 
         for (const p of patterns) {

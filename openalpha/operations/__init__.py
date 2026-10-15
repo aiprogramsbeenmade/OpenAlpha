@@ -19,3 +19,10 @@ from openalpha.operations.numeric.nsolve import nsolve as _nsolve  # noqa: F401
 from openalpha.operations.visualization.plot import plot as _plot  # noqa: F401
 from openalpha.operations.visualization.plot3d import plot3d as _plot3d  # noqa: F401
 from openalpha.operations.calculus.dsolve import dsolve as _dsolve  # noqa: F401
+from openalpha.operations.algebra import apart as _apart  # noqa: F401
+from openalpha.operations.algebra import cancel as _cancel  # noqa: F401
+from openalpha.operations.algebra import collect as _collect  # noqa: F401
+from openalpha.operations.algebra import expand as _expand  # noqa: F401
+from openalpha.operations.algebra import factor as _factor  # noqa: F401
+from openalpha.operations.algebra import simplify as _simplify  # noqa: F401
+from openalpha.operations.algebra import together as _together  # noqa: F401

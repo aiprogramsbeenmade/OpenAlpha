@@ -130,13 +130,11 @@ a una versione 2.0.
 ### Blocco 1 — Fondamentali mancanti (priorità alta)
 
 - **T6.1** ✅ `evaluate` — calcolo numerico diretto
-- **T6.1a** ✅ Versione base
 - **T6.2** ✅ `series` — sviluppo in serie
+- **T6.6** ✅ `dsolve` — equazioni differenziali
+- **T6.7** ✅ Blocco algebra: `apart`, `together`, `cancel`, `collect`
 - **T6.3** ⬜ `roots` — radici di polinomi
 - **T6.4** ⬜ `sum` / `product` — sommatorie e produttorie
-- **T6.5** ⬜ `taylor` (alias di `series`? — da decidere)
-- **T6.6** ✅ `dsolve` — equazioni differenziali (primo e secondo ordine)
-- **T6.8** ⬜ `apart` — frazioni parziali
 
 ### Blocco 2 — Algebra lineare
 
@@ -183,9 +181,9 @@ a una versione 2.0.
 
 ## Stato attuale
 
-**Fase:** 6 — in corso (Blocco 1: fondamentali mancanti).
-**Ultimo task chiuso:** T6.6
-**Prossimo task:** da decidere
+**Fase:** 6 — in corso (Blocco 1).
+**Ultimo task chiuso:** T6.7 (blocco algebra)
+**Prossimo task:** Blocco B — teoria dei numeri
 
 
 ---
@@ -282,7 +280,7 @@ Scelta rimandata. Raccomandazione preliminare: **B** (contenteditable).
 
 Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
-**Contatori:** 15 implementate · 51 pianificate · 66 totali
+**Contatori:** 19 implementate · 47 pianificate · 66 totali
 
 ### Algebra e polinomi
 
@@ -291,10 +289,10 @@ Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 | 1 | `simplify` | ✅ | |
 | 2 | `expand` | ✅ | |
 | 3 | `factor` | ✅ | |
-| 4 | `apart` | ⬜ | Frazioni parziali |
-| 5 | `together` | ⬜ | Denominatore comune |
-| 6 | `cancel` | ⬜ | Semplifica razionali |
-| 7 | `collect` | ⬜ | Raccogli per variabile |
+| 4 | `apart` | ✅ | Frazioni parziali |
+| 5 | `together` | ✅ | Denominatore comune |
+| 6 | `cancel` | ✅ | Semplifica razionali |
+| 7 | `collect` | ✅ | Raccogli per variabile |
 | 8 | `roots` | ⬜ | Radici di polinomi |
 | 9 | `gcd_poly` | ⬜ | MCD di polinomi |
 | 10 | `lcm_poly` | ⬜ | mcm di polinomi |
