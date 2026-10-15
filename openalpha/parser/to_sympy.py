@@ -9,6 +9,9 @@ con SymPy direttamente se non attraverso questa conversione.
 Responsabilità:
 - Tradurre ogni nodo dell'AST in un oggetto SymPy equivalente.
 - Rifiutare nomi di funzione non riconosciuti con ``UnsupportedOperationError``.
+- Se ``allow_functions=True``, mappare le chiamate di funzione non note
+  a ``sympy.Function(name)(arg)`` invece di rifiutarle. Usato da
+  ``dsolve`` per le funzioni incognite (es. ``y(x)``).
 
 Non è responsabilità di questo modulo:
 - Validare lunghezza o profondità dell'AST (compito del validatore).
@@ -70,22 +73,25 @@ def _get_symbol(name: str) -> sympy.Symbol:
     return sym
 
 
-def to_sympy(node: Node) -> sympy.Expr:
+def to_sympy(node: Node, allow_functions: bool = False) -> sympy.Expr:
     """Converte un nodo AST in un oggetto SymPy.
 
     Args:
         node: nodo radice dell'AST.
+        allow_functions: se ``True``, le chiamate di funzione non note
+            vengono mappate a ``sympy.Function(name)(arg)`` invece di
+            sollevare ``UnsupportedOperationError``. Default: ``False``.
 
     Returns:
         L'oggetto SymPy corrispondente.
 
     Solleva:
         UnsupportedOperationError: se l'AST contiene una funzione non
-            riconosciuta, o un tipo di nodo non gestito.
+            riconosciuta (e ``allow_functions=False``), o un tipo di
+            nodo non gestito.
     """
     # Number: interi vs float.
     if isinstance(node, Number):
-        # Tenta Integer, poi Float. SymPy gestisce entrambi.
         try:
             return sympy.Integer(node.value)
         except (ValueError, TypeError):
@@ -104,7 +110,7 @@ def to_sympy(node: Node) -> sympy.Expr:
 
     # UnaryOp.
     if isinstance(node, UnaryOp):
-        operand = to_sympy(node.operand)
+        operand = to_sympy(node.operand, allow_functions=allow_functions)
         if node.op == "-":
             return -operand
         if node.op == "+":
@@ -115,8 +121,8 @@ def to_sympy(node: Node) -> sympy.Expr:
 
     # BinaryOp.
     if isinstance(node, BinaryOp):
-        left = to_sympy(node.left)
-        right = to_sympy(node.right)
+        left = to_sympy(node.left, allow_functions=allow_functions)
+        right = to_sympy(node.right, allow_functions=allow_functions)
         if node.op == "+":
             return left + right
         if node.op == "-":
@@ -134,12 +140,18 @@ def to_sympy(node: Node) -> sympy.Expr:
     # FunctionCall.
     if isinstance(node, FunctionCall):
         func = _FUNCTIONS.get(node.name)
-        if func is None:
-            raise UnsupportedOperationError(
-                f"funzione non supportata: {node.name!r}"
-            )
-        argument = to_sympy(node.argument)
-        return func(argument)  # type: ignore[operator]
+        if func is not None:
+            argument = to_sympy(node.argument, allow_functions=allow_functions)
+            return func(argument)  # type: ignore[operator]
+
+        if allow_functions:
+            # Funzione incognita (es. y(x) in una ODE).
+            argument = to_sympy(node.argument, allow_functions=allow_functions)
+            return sympy.Function(node.name)(argument)
+
+        raise UnsupportedOperationError(
+            f"funzione non supportata: {node.name!r}"
+        )
 
     # Nodo sconosciuto: non dovrebbe accadere se l'AST è ben formato.
     raise UnsupportedOperationError(

@@ -135,8 +135,7 @@ a una versione 2.0.
 - **T6.3** ⬜ `roots` — radici di polinomi
 - **T6.4** ⬜ `sum` / `product` — sommatorie e produttorie
 - **T6.5** ⬜ `taylor` (alias di `series`? — da decidere)
-- **T6.6** ⬜ `dsolve` — equazioni differenziali (primo ordine)
-- **T6.7** ⬜ `dsolve` — equazioni differenziali (secondo ordine)
+- **T6.6** ✅ `dsolve` — equazioni differenziali (primo e secondo ordine)
 - **T6.8** ⬜ `apart` — frazioni parziali
 
 ### Blocco 2 — Algebra lineare
@@ -185,8 +184,9 @@ a una versione 2.0.
 ## Stato attuale
 
 **Fase:** 6 — in corso (Blocco 1: fondamentali mancanti).
-**Ultimo task chiuso:** T6.2
-**Prossimo task:** T6.3 (`roots`) o quello che decidiamo
+**Ultimo task chiuso:** T6.6
+**Prossimo task:** da decidere
+
 
 ---
 
@@ -231,6 +231,7 @@ a una versione 2.0.
 - **2026-10-13**: T5.12d (iconografia Lucide) completato. Fase 5-bis chiusa. 526 test verdi.
 - **2026-10-13**: T6.1a (`evaluate`) completato. 554 test verdi.
 - **2026-10-14**: T6.2 (`series`) completato. 571 test verdi.
+- **2026-10-15**: T6.6 (`dsolve`) completato. 594 test verdi.
 - 
 
 ---
@@ -281,7 +282,7 @@ Scelta rimandata. Raccomandazione preliminare: **B** (contenteditable).
 
 Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
-**Contatori:** 14 implementate · 52 pianificate · 66 totali
+**Contatori:** 15 implementate · 51 pianificate · 66 totali
 
 ### Algebra e polinomi
 
@@ -341,7 +342,7 @@ Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
 | # | Operazione | Stato | Note |
 |---|-----------|-------|------|
-| 30 | `dsolve` | ⬜ | ODE primo/secondo ordine |
+| 30 | `dsolve` | ✅ | ODE primo/secondo ordine, con condizioni iniziali |
 | 31 | `dsolve_system` | ⬜ | Sistemi di ODE |
 
 ### Trasformate

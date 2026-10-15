@@ -28,13 +28,20 @@ from openalpha.parser.validator import validate
 __all__ = ["parse_expression"]
 
 
-def parse_expression(input_expression: str) -> sympy.Expr:
+def parse_expression(
+    input_expression: str,
+    allow_functions: bool = False,
+) -> sympy.Expr:
     """Interpreta una stringa e restituisce un oggetto SymPy.
 
     Catena completa: tokenize → parse → validate → to_sympy.
 
     Args:
         input_expression: espressione matematica come stringa.
+        allow_functions: se ``True``, le chiamate di funzione non note
+            (es. ``y(x)``) vengono mappate a ``sympy.Function(name)(arg)``
+            invece di sollevare ``UnsupportedOperationError``. Usato da
+            ``dsolve`` per le funzioni incognite. Default: ``False``.
 
     Returns:
         L'oggetto SymPy corrispondente.
@@ -48,4 +55,4 @@ def parse_expression(input_expression: str) -> sympy.Expr:
     tokens = tokenize(input_expression)
     ast = parse_tokens(tokens)
     validate(ast, input_length=len(input_expression))
-    return to_sympy(ast)
+    return to_sympy(ast, allow_functions=allow_functions)

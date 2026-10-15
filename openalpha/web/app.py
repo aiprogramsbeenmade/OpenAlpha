@@ -232,6 +232,8 @@ def _execute_with_params(
             ymax=params.get("ymax", "5"),
             output=params.get("output"),
         )
+    if operation == "dsolve":
+        return func(expression)
 
     return func(expression)
 

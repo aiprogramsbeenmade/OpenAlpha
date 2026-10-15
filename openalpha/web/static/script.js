@@ -175,6 +175,31 @@ function initOpenAlpha() {
         s = s.replace(/\\theta/g, "theta");
         s = s.replace(/\\lambda/g, "lambda");
 
+        // Derivate: MathLive esporta y' in vari formati, a seconda
+        // del contesto:
+        //   - y'           (apostrofo ASCII)
+        //   - y^'          (apice + apostrofo ASCII)
+        //   - y^{\prime}   (LaTeX)
+        //   - y^′          (apice + U+2032 PRIME unicode)
+        //   - y′           (U+2032 PRIME unicode)
+        // Li normalizziamo tutti in y', y'', y'''.
+        //
+        // Triple prime (U+2034), doppio prime (U+2033), prime (U+2032).
+        s = s.replace(/\^\{\\prime\\prime\\prime\}/g, "'''");
+        s = s.replace(/\^\{\\prime\\prime\}/g, "''");
+        s = s.replace(/\^\{\\prime\}/g, "'");
+        s = s.replace(/\^\\prime\\prime\\prime/g, "'''");
+        s = s.replace(/\^\\prime\\prime/g, "''");
+        s = s.replace(/\^\\prime/g, "'");
+        s = s.replace(/\^\u2034/g, "'''");   // ^‴
+        s = s.replace(/\^\u2033/g, "''");    // ^″
+        s = s.replace(/\^\u2032/g, "'");     // ^′
+        s = s.replace(/\u2034/g, "'''");     // ‴
+        s = s.replace(/\u2033/g, "''");      // ″
+        s = s.replace(/\u2032/g, "'");       // ′
+        s = s.replace(/\^'/g, "'");          // ^'
+        s = s.replace(/\^"/g, "'");          // ^" (a volte MathLive usa doppio apice ASCII)
+
         // Potenza: `^` -> `**`. Va fatto dopo i replace LaTeX,
         // altrimenti si rischia di toccare `**` già presenti.
         s = s.replace(/\^\{([^}]*)\}/g, "**($1)");
@@ -471,6 +496,11 @@ function initOpenAlpha() {
             {
                 name: "plot",
                 regex: /^\s*plot\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+                        {
+                name: "dsolve",
+                regex: /^\s*dsolve\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
         ];

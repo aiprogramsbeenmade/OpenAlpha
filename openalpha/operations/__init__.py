@@ -18,3 +18,4 @@ from openalpha.operations.numeric.nintegrate import nintegrate as _nintegrate  #
 from openalpha.operations.numeric.nsolve import nsolve as _nsolve  # noqa: F401
 from openalpha.operations.visualization.plot import plot as _plot  # noqa: F401
 from openalpha.operations.visualization.plot3d import plot3d as _plot3d  # noqa: F401
+from openalpha.operations.calculus.dsolve import dsolve as _dsolve  # noqa: F401
