@@ -127,25 +127,27 @@ tematici. Le operazioni sono elencate nell'**Inventario operazioni**
 (sopra). T6.3 (linguaggio naturale) e T6.4 (AI locale) sono rimandate
 a una versione 2.0.
 
-### Blocco 1 — Fondamentali mancanti (priorità alta)
+### Blocco 1 — Fondamentali mancanti ✅
 
 - **T6.1** ✅ `evaluate` — calcolo numerico diretto
 - **T6.2** ✅ `series` — sviluppo in serie
 - **T6.6** ✅ `dsolve` — equazioni differenziali
 - **T6.7** ✅ Blocco algebra: `apart`, `together`, `cancel`, `collect`
-- **T6.3** ⬜ `roots` — radici di polinomi
-- **T6.4** ⬜ `sum` / `product` — sommatorie e produttorie
+- **T6.8** ✅ Blocco teoria dei numeri: `factorint`, `isprime`, `divisors`, `totient`, `prime`
 
-### Blocco 2 — Algebra lineare
+### Blocco 2 — Aritmetica di base ⬜
 
-- **T6.8** ⬜ Parser matrici (`[[1, 2], [3, 4]]`)
-- **T6.9** ⬜ `det`, `inv`, `transpose`, `rank`, `rref`
-- **T6.10** ⬜ `eigenvalues`, `eigenvectors`, `trace`
+- **T6.9** ⬜ `gcd` / `lcm`
+- **T6.10** ⬜ `factorial`
+- **T6.11** ⬜ `combinations` / `permutations`
+- **T6.12** ⬜ `mod_inverse`
+- **T6.13** ⬜ `round` / `floor` / `ceil`
 
-### Blocco 3 — Teoria dei numeri
+### Blocco 3 — Sommatorie e produttorie ⬜
 
-- **T6.11** ⬜ `factorint`, `isprime`, `divisors`, `totient`, `prime`
-- **T6.12** ⬜ `gcd`, `lcm`, `mod_inverse`, `crt`
+- **T6.4** ⬜ `sum` / `product` (richiede estensione parser per range)
+- **T6.3** ⬜ `roots`
+- **T6.14** ⬜ `laplace_transform` / `inverse_laplace`
 
 ### Blocco 4 — Statistica
 
@@ -181,9 +183,9 @@ a una versione 2.0.
 
 ## Stato attuale
 
-**Fase:** 6 — in corso (Blocco 1).
-**Ultimo task chiuso:** T6.7 (blocco algebra)
-**Prossimo task:** Blocco B — teoria dei numeri
+**Fase:** 6 — in corso.
+**Ultimo task chiuso:** T6.8 (blocco teoria dei numeri)
+**Prossimo task:** Blocco 2 (aritmetica di base)
 
 
 ---
@@ -230,7 +232,7 @@ a una versione 2.0.
 - **2026-10-13**: T6.1a (`evaluate`) completato. 554 test verdi.
 - **2026-10-14**: T6.2 (`series`) completato. 571 test verdi.
 - **2026-10-15**: T6.6 (`dsolve`) completato. 594 test verdi.
-- 
+- **2026-10-15**: T6.7 (algebra) e T6.8 (teoria dei numeri) completati. 664 test verdi.
 
 ---
 
@@ -273,14 +275,25 @@ Per l'input visuale stile WA, tre possibili approcci:
 - **C.** Editor LaTeX visuale.
 
 Scelta rimandata. Raccomandazione preliminare: **B** (contenteditable).
+### Rendering dei risultati
 
+Alcune operazioni (es. `factorint`, `divisors`, `isprime`) restituiscono
+stringhe formattate che **non** sono espressioni matematiche valide
+(es. `"2^2 * 5^2"` verrebbe rivalutato a `100` da SymPy).
+
+Per queste operazioni, il `Result` include `metadata["latex_exact"]` con
+il LaTeX già pronto. `app.py` lo usa direttamente, senza passare da
+`_try_latex`. Se `latex_exact` è assente, si tenta la conversione
+automatica con `_try_latex`.
+
+Questo evita di rivalutare espressioni che perderebbero informazione.
 ---
 
 ## Inventario operazioni
 
 Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
-**Contatori:** 19 implementate · 47 pianificate · 66 totali
+**Contatori:** 24 implementate · 42 pianificate · 66 totali
 
 ### Algebra e polinomi
 
@@ -379,11 +392,11 @@ Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
 | # | Operazione | Stato | Note |
 |---|-----------|-------|------|
-| 49 | `factorint` | ⬜ | Fattorizzazione in primi |
-| 50 | `isprime` | ⬜ | Test di primalità |
-| 51 | `prime` | ⬜ | n-esimo primo |
-| 52 | `totient` | ⬜ | φ di Eulero |
-| 53 | `divisors` | ⬜ | Divisori |
+| 49 | `factorint` | ✅ | Fattorizzazione in primi |
+| 50 | `isprime` | ✅ | Test di primalità |
+| 51 | `prime` | ✅ | n-esimo primo |
+| 52 | `totient` | ✅ | φ di Eulero |
+| 53 | `divisors` | ✅ | Divisori |
 | 54 | `gcd` | ⬜ | MCD interi |
 | 55 | `lcm` | ⬜ | mcm interi |
 | 56 | `mod_inverse` | ⬜ | Inverso modulare |

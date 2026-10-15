@@ -435,8 +435,18 @@ def create_app() -> Flask:
             serialized["plot_data"] = None
 
         # LaTeX per gli altri campi.
+        # Se il Result fornisce un LaTeX già pronto (metadata["latex_exact"]),
+        # lo usiamo. Altrimenti proviamo a generarlo da "exact".
+        latex_exact_ready = result.metadata.get("latex_exact")
+        if latex_exact_ready:
+            latex_exact = latex_exact_ready
+        elif result.exact:
+            latex_exact = _try_latex(result.exact)
+        else:
+            latex_exact = None
+
         serialized["latex"] = {
-            "exact": _try_latex(result.exact) if result.exact else None,
+            "exact": latex_exact,
             "solutions": [
                 _try_latex(sol.split("=", 1)[1].strip()) if "=" in sol else _try_latex(sol)
                 for sol in result.solutions
