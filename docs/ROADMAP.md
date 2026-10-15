@@ -120,22 +120,73 @@ distribuita come applicazione standalone.
 - **T5.15** ⬜ UI dedicata per i parametri di plot (campi xmin, xmax, ecc.)
 ---
 
-## Fase 6 — Estensioni future ⬜
+## Fase 6 — Operazioni matematiche ⬜
 
-- **T6.1** ⬜ Equazioni differenziali
-- **T6.2** ⬜ Serie e successioni
-- **T6.3** ⬜ Linguaggio naturale (parsing di richieste in italiano/inglese)
-- **T6.4** ⬜ Integrazione AI locale (opzionale)
-- **T6.5** ⬜ API REST pubblica
-- **T6.6** ⬜ Altre operazioni (matrici, statistica, teoria dei numeri)
+Obiettivo: portare OpenAlpha a copertura CAS completa, in blocchi
+tematici. Le operazioni sono elencate nell'**Inventario operazioni**
+(sopra). T6.3 (linguaggio naturale) e T6.4 (AI locale) sono rimandate
+a una versione 2.0.
 
+### Blocco 1 — Fondamentali mancanti (priorità alta)
+
+- **T6.1** ✅ `evaluate` — calcolo numerico diretto
+- **T6.1a** ✅ Versione base
+- **T6.2** ✅ `series` — sviluppo in serie
+- **T6.3** ⬜ `roots` — radici di polinomi
+- **T6.4** ⬜ `sum` / `product` — sommatorie e produttorie
+- **T6.5** ⬜ `taylor` (alias di `series`? — da decidere)
+- **T6.6** ⬜ `dsolve` — equazioni differenziali (primo ordine)
+- **T6.7** ⬜ `dsolve` — equazioni differenziali (secondo ordine)
+- **T6.8** ⬜ `apart` — frazioni parziali
+
+### Blocco 2 — Algebra lineare
+
+- **T6.8** ⬜ Parser matrici (`[[1, 2], [3, 4]]`)
+- **T6.9** ⬜ `det`, `inv`, `transpose`, `rank`, `rref`
+- **T6.10** ⬜ `eigenvalues`, `eigenvectors`, `trace`
+
+### Blocco 3 — Teoria dei numeri
+
+- **T6.11** ⬜ `factorint`, `isprime`, `divisors`, `totient`, `prime`
+- **T6.12** ⬜ `gcd`, `lcm`, `mod_inverse`, `crt`
+
+### Blocco 4 — Statistica
+
+- **T6.13** ⬜ `mean`, `median`, `std`, `var`
+- **T6.14** ⬜ `combinations`, `permutations`, `factorial`
+
+### Blocco 5 — Calcolo avanzato
+
+- **T6.15** ⬜ `diff_partial`, `gradient`, `hessian`, `critical_points`
+- **T6.16** ⬜ `integrate_multiple`
+- **T6.17** ⬜ `laplace_transform`, `inverse_laplace`, `fourier_transform`
+
+### Blocco 6 — Equazioni avanzate
+
+- **T6.18** ⬜ `solve_inequality`
+- **T6.19** ⬜ `solve_system_nonlinear`
+
+### Blocco 7 — Algebra e polinomi (rifinitura)
+
+- **T6.20** ⬜ `together`, `cancel`, `collect`, `degree`, `coeff`
+- **T6.21** ⬜ `gcd_poly`, `lcm_poly`, `div_poly`, `rem_poly`
+
+### Blocco 8 — Geometria analitica (opzionale)
+
+- **T6.22** ⬜ `distance`, `line_equation`, `intersection`
+
+### Rimandate a v2.0
+
+- Linguaggio naturale (parsing di richieste in italiano/inglese)
+- Integrazione AI locale
+- API REST pubblica
 ---
 
 ## Stato attuale
 
-**Fase:** 5 — chiusa. Fase 5-bis — chiusa. Prossimo: Fase 6 o Fase 5-ter.
-**Ultimo task chiuso:** T5.12d
-**Prossimo task:** da decidere (Fase 6 o Fase 5-ter)
+**Fase:** 6 — in corso (Blocco 1: fondamentali mancanti).
+**Ultimo task chiuso:** T6.2
+**Prossimo task:** T6.3 (`roots`) o quello che decidiamo
 
 ---
 
@@ -178,6 +229,9 @@ distribuita come applicazione standalone.
 - **2026-10-13**: T5.11d (tastiera nell'editor visuale) completato. 526 test verdi.
 - **2026-10-13**: T5.11d (tastiera in editor visuale) e T5.11e (round-trip testo/visuale stabile) completati. 526 test verdi.
 - **2026-10-13**: T5.12d (iconografia Lucide) completato. Fase 5-bis chiusa. 526 test verdi.
+- **2026-10-13**: T6.1a (`evaluate`) completato. 554 test verdi.
+- **2026-10-14**: T6.2 (`series`) completato. 571 test verdi.
+- 
 
 ---
 
@@ -220,3 +274,145 @@ Per l'input visuale stile WA, tre possibili approcci:
 - **C.** Editor LaTeX visuale.
 
 Scelta rimandata. Raccomandazione preliminare: **B** (contenteditable).
+
+---
+
+## Inventario operazioni
+
+Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
+
+**Contatori:** 14 implementate · 52 pianificate · 66 totali
+
+### Algebra e polinomi
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 1 | `simplify` | ✅ | |
+| 2 | `expand` | ✅ | |
+| 3 | `factor` | ✅ | |
+| 4 | `apart` | ⬜ | Frazioni parziali |
+| 5 | `together` | ⬜ | Denominatore comune |
+| 6 | `cancel` | ⬜ | Semplifica razionali |
+| 7 | `collect` | ⬜ | Raccogli per variabile |
+| 8 | `roots` | ⬜ | Radici di polinomi |
+| 9 | `gcd_poly` | ⬜ | MCD di polinomi |
+| 10 | `lcm_poly` | ⬜ | mcm di polinomi |
+| 11 | `div_poly` | ⬜ | Divisione polinomiale |
+| 12 | `rem_poly` | ⬜ | Resto polinomiale |
+| 13 | `degree` | ⬜ | Grado di un polinomio |
+| 14 | `coeff` | ⬜ | Coefficienti |
+
+### Equazioni e sistemi
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 15 | `solve` | ✅ | Polinomiali, grado ≤ 4 |
+| 16 | `solve_system` | ✅ | Solo lineari, soluzione unica |
+| 17 | `solve_system_nonlinear` | ⬜ | |
+| 18 | `solve_inequality` | ⬜ | Disequazioni |
+
+### Calcolo differenziale
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 19 | `diff` | ✅ | |
+| 20 | `diff_partial` | ⬜ | Derivate parziali |
+| 21 | `gradient` | ⬜ | |
+| 22 | `hessian` | ⬜ | |
+| 23 | `taylor` | ⬜ | Sviluppo di Taylor |
+| 24 | `series` | ✅ | Sviluppo in serie (Taylor, Maclaurin) |
+| 25 | `critical_points` | ⬜ | Punti critici |
+
+### Calcolo integrale
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 26 | `integrate` | ✅ | Indefinito e definito |
+| 27 | `integrate_multiple` | ⬜ | Integrali doppi/tripli |
+
+### Limiti
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 28 | `limit` | ✅ | |
+| 29 | `limit_sequence` | ⬜ | Limite di successione |
+
+### Equazioni differenziali
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 30 | `dsolve` | ⬜ | ODE primo/secondo ordine |
+| 31 | `dsolve_system` | ⬜ | Sistemi di ODE |
+
+### Trasformate
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 32 | `laplace_transform` | ⬜ | |
+| 33 | `inverse_laplace` | ⬜ | |
+| 34 | `fourier_transform` | ⬜ | |
+
+### Serie e successioni
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 35 | `sum` | ⬜ | Sommatorie |
+| 36 | `product` | ⬜ | Produttorie |
+| 37 | `convergence` | ⬜ | Criteri di convergenza |
+
+### Algebra lineare
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 38 | `det` | ⬜ | Richiede parser matrici |
+| 39 | `inv` | ⬜ | Richiede parser matrici |
+| 40 | `transpose` | ⬜ | Richiede parser matrici |
+| 41 | `rank` | ⬜ | Richiede parser matrici |
+| 42 | `rref` | ⬜ | Richiede parser matrici |
+| 43 | `eigenvalues` | ⬜ | Richiede parser matrici |
+| 44 | `eigenvectors` | ⬜ | Richiede parser matrici |
+| 45 | `trace` | ⬜ | Richiede parser matrici |
+| 46 | `lu` | ⬜ | Richiede parser matrici |
+| 47 | `qr` | ⬜ | Richiede parser matrici |
+| 48 | `svd` | ⬜ | Richiede parser matrici |
+
+### Teoria dei numeri
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 49 | `factorint` | ⬜ | Fattorizzazione in primi |
+| 50 | `isprime` | ⬜ | Test di primalità |
+| 51 | `prime` | ⬜ | n-esimo primo |
+| 52 | `totient` | ⬜ | φ di Eulero |
+| 53 | `divisors` | ⬜ | Divisori |
+| 54 | `gcd` | ⬜ | MCD interi |
+| 55 | `lcm` | ⬜ | mcm interi |
+| 56 | `mod_inverse` | ⬜ | Inverso modulare |
+| 57 | `crt` | ⬜ | Teorema cinese |
+
+### Statistica e probabilità
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 58 | `mean` | ⬜ | |
+| 59 | `median` | ⬜ | |
+| 20 | `std` | ⬜ | Deviazione standard |
+| 61 | `var` | ⬜ | Varianza |
+| 62 | `combinations` | ⬜ | Coefficienti binomiali |
+| 63 | `permutations` | ⬜ | |
+| 64 | `factorial` | ⬜ | |
+
+### Aritmetica di base
+
+| # | Operazione | Stato | Note |
+|---|-----------|-------|------|
+| 65 | `evaluate` | ✅ | Calcolo numerico diretto |
+| 66 | `round` / `floor` / `ceil` | ⬜ | Arrotondamenti |
+
+---
+
+**Nota:** alcuni numeri sono indicativi. Le operazioni raggruppate
+(es. `round`/`floor`/`ceil`) contano come una voce di catalogo ma
+potrebbero diventare più operazioni distinte.
+
+**Prossimo blocco pianificato:** Blocco 1 — Fondamentali mancanti.

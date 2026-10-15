@@ -172,6 +172,17 @@ def _execute_with_params(
             var=params.get("var", "x"),
             point=params.get("point", "0"),
         )
+    if operation == "series":
+        try:
+            order = int(params.get("order", 6))
+        except (ValueError, TypeError):
+            order = 6
+        return func(
+            expression,
+            var=params.get("var", "x"),
+            point=params.get("point", "0"),
+            order=order,
+        )
     if operation == "diff":
         try:
             order = int(params.get("order", 1))

@@ -410,6 +410,27 @@ function initOpenAlpha() {
     function analizzaInput(expr) {
         const patterns = [
             {
+                name: "series",
+                regex: /^\s*series\s*\(\s*(.+?)\s*,\s*(\w+)\s*,\s*(.+?)\s*,\s*(\d+)\s*\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: { var: m[2], point: m[3], order: parseInt(m[4], 10) },
+                }),
+            },
+            {
+                name: "series",
+                regex: /^\s*series\s*\(\s*(.+?)\s*,\s*(\w+)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: { var: m[2], point: m[3] },
+                }),
+            },
+            {
+                name: "series",
+                regex: /^\s*series\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
                 name: "integrate",
                 regex: /^\s*integrate\s*\(\s*(.+?)\s*,\s*(\w+)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: { var: m[2] } }),
