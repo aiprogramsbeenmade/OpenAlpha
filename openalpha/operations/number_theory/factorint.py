@@ -23,6 +23,7 @@ from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
 from openalpha.parser import parse_expression
+from openalpha.explanations.numeric.factorint import explain_factorint
 
 
 @register(
@@ -90,12 +91,9 @@ def factorint(expression: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=exact_str,
+        steps=explain_factorint(n),
         metadata={
             "factors": {str(k): v for k, v in factors.items()},
-            # Il risultato è una stringa formattata ("2^3 * 3"),
-            # non un'espressione matematica. SymPy la valuterebbe
-            # (2^3 * 3 = 24). Forniamo il LaTeX già pronto, così
-            # il frontend lo renderizza senza rivalutarlo.
             "latex_exact": latex_str,
         },
     )

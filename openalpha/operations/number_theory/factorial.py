@@ -22,6 +22,7 @@ from openalpha.core.exceptions import (
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.factorial import explain_factorial
 from openalpha.parser import parse_expression
 
 
@@ -70,4 +71,5 @@ def factorial(expression: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_factorial(n),
     )

@@ -23,6 +23,7 @@ from openalpha.core.exceptions import (
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.totient import explain_totient
 from openalpha.parser import parse_expression
 
 
@@ -71,4 +72,5 @@ def totient(expression: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_totient(n),
     )

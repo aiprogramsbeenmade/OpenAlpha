@@ -74,9 +74,11 @@
                     <button class="tab" data-tab="calculus">Calculus</button>
                     <button class="tab" data-tab="algebra">Algebra</button>
                     <button class="tab" data-tab="trig">Trig</button>
+                    <button class="tab" data-tab="number">Number</button>
                     <button class="tab" data-tab="plot">Plot</button>
                 </div>
 
+                <!-- ============================ BASIC ============================ -->
                 <div class="keyboard-panel active" data-panel="basic">
                     <button data-insert="**2">x²</button>
                     <button data-insert="sqrt()" data-cursor-offset="-1">√</button>
@@ -91,20 +93,29 @@
                     <button data-insert="**">^</button>
                 </div>
 
+                <!-- ========================== CALCULUS =========================== -->
                 <div class="keyboard-panel" data-panel="calculus">
                     <button data-insert="integrate(, x)" data-cursor-offset="-4">∫</button>
                     <button data-insert="diff(, x)" data-cursor-offset="-4">d/dx</button>
                     <button data-insert="limit(, x, 0)" data-cursor-offset="-7">lim</button>
+                    <button data-insert="series(, x, 0, 6)" data-cursor-offset="-10">series</button>
                     <button data-insert="dsolve()" data-cursor-offset="-1">ODE</button>
                 </div>
 
+                <!-- =========================== ALGEBRA =========================== -->
                 <div class="keyboard-panel" data-panel="algebra">
                     <button data-insert="solve()" data-cursor-offset="-1">solve</button>
                     <button data-insert="solve_system()" data-cursor-offset="-1">system</button>
                     <button data-insert="nsolve()" data-cursor-offset="-1">nsolve</button>
+                    <button data-insert="roots()" data-cursor-offset="-1">roots</button>
+                    <button data-insert="apart()" data-cursor-offset="-1">apart</button>
+                    <button data-insert="together()" data-cursor-offset="-1">together</button>
+                    <button data-insert="cancel()" data-cursor-offset="-1">cancel</button>
+                    <button data-insert="collect()" data-cursor-offset="-1">collect</button>
                     <button data-insert="=">=</button>
                 </div>
 
+                <!-- ============================= TRIG ============================ -->
                 <div class="keyboard-panel" data-panel="trig">
                     <button data-insert="sin()" data-cursor-offset="-1">sin</button>
                     <button data-insert="cos()" data-cursor-offset="-1">cos</button>
@@ -116,6 +127,26 @@
                     <button data-insert="exp()" data-cursor-offset="-1">exp</button>
                 </div>
 
+                <!-- ============================ NUMBER =========================== -->
+                <div class="keyboard-panel" data-panel="number">
+                    <button data-insert="factorint()" data-cursor-offset="-1">factorint</button>
+                    <button data-insert="isprime()" data-cursor-offset="-1">isprime</button>
+                    <button data-insert="divisors()" data-cursor-offset="-1">divisors</button>
+                    <button data-insert="totient()" data-cursor-offset="-1">totient</button>
+                    <button data-insert="prime()" data-cursor-offset="-1">prime</button>
+                    <button data-insert="gcd()" data-cursor-offset="-1">gcd</button>
+                    <button data-insert="lcm()" data-cursor-offset="-1">lcm</button>
+                    <button data-insert="mod_inverse()" data-cursor-offset="-1">mod_inverse</button>
+                    <button data-insert="factorial()" data-cursor-offset="-1">factorial</button>
+                    <button data-insert="combinations()" data-cursor-offset="-1">combinations</button>
+                    <button data-insert="permutations()" data-cursor-offset="-1">permutations</button>
+                    <button data-insert="evaluate()" data-cursor-offset="-1">evaluate</button>
+                    <button data-insert="round()" data-cursor-offset="-1">round</button>
+                    <button data-insert="floor()" data-cursor-offset="-1">floor</button>
+                    <button data-insert="ceil()" data-cursor-offset="-1">ceil</button>
+                </div>
+
+                <!-- ============================= PLOT ============================ -->
                 <div class="keyboard-panel" data-panel="plot">
                     <button data-insert="plot()" data-cursor-offset="-1">plot 2D</button>
                     <button data-insert="plot3d()" data-cursor-offset="-1">plot 3D</button>

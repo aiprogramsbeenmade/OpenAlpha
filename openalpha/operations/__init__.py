@@ -34,3 +34,4 @@ from openalpha.operations.number_theory.totient import totient as _totient  # no
 from openalpha.operations.numeric.ceil import ceil as _ceil  # noqa: F401
 from openalpha.operations.numeric.floor import floor as _floor  # noqa: F401
 from openalpha.operations.numeric.round import round as _round  # noqa: F401
+from openalpha.operations.algebra import roots as _roots  # noqa: F401

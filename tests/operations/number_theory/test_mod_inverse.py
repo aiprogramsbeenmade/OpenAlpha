@@ -12,21 +12,18 @@ def test_mod_inverse_registrata():
 
 
 def test_mod_inverse_3_7():
-    """3 * 5 = 15 ≡ 1 (mod 7)."""
     result = mod_inverse("3", "7")
     assert result.status == ResultStatus.EXACT
     assert result.exact == "5"
 
 
 def test_mod_inverse_10_17():
-    """10 * 12 = 120 ≡ 1 (mod 17)."""
     result = mod_inverse("10", "17")
     assert result.status == ResultStatus.EXACT
     assert result.exact == "12"
 
 
 def test_mod_inverse_non_esiste():
-    """gcd(2, 4) = 2, quindi 2 non ha inverso mod 4."""
     result = mod_inverse("2", "4")
     assert result.status == ResultStatus.UNSUPPORTED
 
@@ -45,3 +42,34 @@ def test_mod_inverse_non_intero():
 def test_mod_inverse_input_vuoto():
     result = mod_inverse("", "7")
     assert result.status == ResultStatus.ERROR
+
+
+# ---------------------------------------------------------------------------
+# Test dei passaggi
+# ---------------------------------------------------------------------------
+
+def test_mod_inverse_3_7_step():
+    """mod_inverse(3, 7) produce 2 step."""
+    result = mod_inverse("3", "7")
+    assert len(result.steps) == 2
+
+
+def test_mod_inverse_3_7_step_finale():
+    """L'ultimo step è il risultato."""
+    result = mod_inverse("3", "7")
+    last = result.steps[-1]
+    assert last.rule_name == "risultato"
+    assert last.after == "5"
+
+
+def test_mod_inverse_10_17_step():
+    """mod_inverse(10, 17) produce 2 step."""
+    result = mod_inverse("10", "17")
+    assert len(result.steps) == 2
+
+
+def test_mod_inverse_non_esiste_step():
+    """mod_inverse(2, 4): 1 step 'condizione di esistenza'."""
+    result = mod_inverse("2", "4")
+    assert len(result.steps) == 1
+    assert result.steps[0].rule_name == "condizione di esistenza"

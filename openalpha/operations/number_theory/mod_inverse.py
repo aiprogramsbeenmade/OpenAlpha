@@ -16,6 +16,7 @@ import sympy
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.mod_inverse import explain_mod_inverse
 from openalpha.operations.number_theory.gcd import _parse_interi
 
 
@@ -46,10 +47,12 @@ def mod_inverse(a: str, m: str) -> Result:
             **base,
             status=ResultStatus.UNSUPPORTED,
             error=f"l'inverso modulare non esiste: {exc}",
+            steps=explain_mod_inverse(a_int, m_int),
         )
 
     return Result(
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_mod_inverse(a_int, m_int),
     )

@@ -54,3 +54,41 @@ def test_factorial_non_intero():
 def test_factorial_input_vuoto():
     result = factorial("")
     assert result.status == ResultStatus.ERROR
+
+
+# ---------------------------------------------------------------------------
+# Test dei passaggi
+# ---------------------------------------------------------------------------
+
+def test_factorial_5_step():
+    """factorial(5) produce 2 step."""
+    result = factorial("5")
+    assert len(result.steps) == 2
+
+
+def test_factorial_5_step_calcolo():
+    """L'ultimo step è il calcolo."""
+    result = factorial("5")
+    last = result.steps[-1]
+    assert last.rule_name == "calcolo"
+    assert last.after == "120"
+
+
+def test_factorial_0_step():
+    """factorial(0): 1 step."""
+    result = factorial("0")
+    assert len(result.steps) == 1
+    assert result.steps[0].rule_name == "definizione"
+
+
+def test_factorial_1_step():
+    """factorial(1): 1 step."""
+    result = factorial("1")
+    assert len(result.steps) == 1
+
+
+def test_factorial_20_step_riassunto():
+    """factorial(20): n > 10, 1 step riassuntivo."""
+    result = factorial("20")
+    assert len(result.steps) == 1
+    assert "20" in result.steps[0].description

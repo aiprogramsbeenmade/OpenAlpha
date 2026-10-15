@@ -140,7 +140,7 @@ function initOpenAlpha() {
     // Conversione MathLive -> sintassi OpenAlpha
     // ---------------------------------------------------------------------
 
-        function convertMathLiveToOpenAlpha(raw) {
+    function convertMathLiveToOpenAlpha(raw) {
         if (!raw) return "";
         let s = raw.trim();
 
@@ -217,7 +217,8 @@ function initOpenAlpha() {
 
         return s;
     }
-        // ---------------------------------------------------------------------
+
+    // ---------------------------------------------------------------------
     // Conversione OpenAlpha -> LaTeX (per inserimento in MathLive)
     // ---------------------------------------------------------------------
     //
@@ -231,7 +232,7 @@ function initOpenAlpha() {
     //   mathlive: stringa LaTeX (o testo) da passare a mathfield.insert()
     //   openAlpha: stringa OpenAlpha "equivalente" dopo l'inserimento
     //              (usata per aggiornare lo stato interno)
-        function convertOpenAlphaToMathLive(text) {
+    function convertOpenAlphaToMathLive(text) {
         if (!text) return { mathlive: "", openAlpha: "" };
 
         let s = text;
@@ -306,7 +307,7 @@ function initOpenAlpha() {
         });
     }
 
-        function inserisciFrammento(text, cursorOffset) {
+    function inserisciFrammento(text, cursorOffset) {
         if (activeMode === "text") {
             inserisciInTesto(text, cursorOffset);
         } else if (activeMode === "visual") {
@@ -434,6 +435,7 @@ function initOpenAlpha() {
 
     function analizzaInput(expr) {
         const patterns = [
+            // ---- Serie e calcolo ----
             {
                 name: "series",
                 regex: /^\s*series\s*\(\s*(.+?)\s*,\s*(\w+)\s*,\s*(.+?)\s*,\s*(\d+)\s*\)\s*$/,
@@ -474,6 +476,13 @@ function initOpenAlpha() {
                 build: (m) => ({ expression: m[1], params: { var: m[2], point: m[3] } }),
             },
             {
+                name: "dsolve",
+                regex: /^\s*dsolve\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+
+            // ---- Equazioni ----
+            {
                 name: "nsolve",
                 regex: /^\s*nsolve\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
@@ -488,6 +497,8 @@ function initOpenAlpha() {
                 regex: /^\s*solve\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
+
+            // ---- Grafici ----
             {
                 name: "plot3d",
                 regex: /^\s*plot3d\s*\(\s*(.+?)\s*\)\s*$/,
@@ -498,12 +509,9 @@ function initOpenAlpha() {
                 regex: /^\s*plot\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
-                        {
-                name: "dsolve",
-                regex: /^\s*dsolve\s*\(\s*(.+?)\s*\)\s*$/,
-                build: (m) => ({ expression: m[1], params: {} }),
-            },
-                        {
+
+            // ---- Algebra ----
+            {
                 name: "collect",
                 regex: /^\s*collect\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?\)\s*$/,
                 build: (m) => ({
@@ -529,7 +537,42 @@ function initOpenAlpha() {
                 regex: /^\s*cancel\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
-                        {
+            {
+                name: "roots",
+                regex: /^\s*roots\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: m[2] ? { var: m[2] } : {},
+                }),
+            },
+
+            // ---- Teoria dei numeri ----
+            {
+                name: "factorint",
+                regex: /^\s*factorint\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "isprime",
+                regex: /^\s*isprime\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "divisors",
+                regex: /^\s*divisors\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "totient",
+                regex: /^\s*totient\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "prime",
+                regex: /^\s*prime\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
                 name: "gcd",
                 regex: /^\s*gcd\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: { b: m[2] } }),
@@ -545,6 +588,11 @@ function initOpenAlpha() {
                 build: (m) => ({ expression: m[1], params: { m: m[2] } }),
             },
             {
+                name: "factorial",
+                regex: /^\s*factorial\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
                 name: "combinations",
                 regex: /^\s*combinations\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: { k: m[2] } }),
@@ -554,9 +602,11 @@ function initOpenAlpha() {
                 regex: /^\s*permutations\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: { k: m[2] } }),
             },
+
+            // ---- Aritmetica ----
             {
-                name: "factorial",
-                regex: /^\s*factorial\s*\(\s*(.+?)\s*\)\s*$/,
+                name: "evaluate",
+                regex: /^\s*evaluate\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
             {
@@ -585,7 +635,6 @@ function initOpenAlpha() {
         }
         return null;
     }
-
     // ---------------------------------------------------------------------
     // Esecuzione
     // ---------------------------------------------------------------------
@@ -866,20 +915,40 @@ function initOpenAlpha() {
             html += `<p><strong>Condizioni:</strong> ${data.conditions.map(escapeHtml).join(", ")}</p>`;
         }
         if (data.steps && data.steps.length > 0) {
+            const MAX_VISIBLE = 5;
+            const totalSteps = data.steps.length;
+            const showAll = totalSteps <= MAX_VISIBLE;
+
             html += `<p><strong>Procedimento:</strong></p>`;
-            html += `<ol class="steps-list">`;
+            html += `<ol class="steps-list" id="steps-list">`;
             data.steps.forEach((step, i) => {
+                const hidden = !showAll && i >= MAX_VISIBLE;
                 const latexStep = data.latex && data.latex.steps && data.latex.steps[i];
-                html += `<li>`;
+
+                html += `<li class="step-item"${hidden ? ' style="display: none;"' : ""} data-step-index="${i}">`;
                 html += `<div class="step-description">${escapeHtml(step.description)}</div>`;
-                if (latexStep && latexStep.before && latexStep.after) {
-                    html += `<div class="math-step">\\[${latexStep.before} \\quad \\to \\quad ${latexStep.after}\\]</div>`;
+
+                // Usa sempre step.before / step.after. Il LaTeX generato
+                // dal backend (latexStep) può essere stato rivalutato
+                // (es. "2^2 * 5^2" -> "100"), quindi lo ignoriamo.
+                let before = null, after = null;
+                if (isLatexLike(step.before) && isLatexLike(step.after)) {
+                    before = step.before;
+                    after = step.after;
+                }
+
+                if (before !== null && after !== null) {
+                    html += `<div class="math-step">\\[${before} \\quad \\to \\quad ${after}\\]</div>`;
                 } else {
                     html += `<div><code>${escapeHtml(step.before)}</code> → <code>${escapeHtml(step.after)}</code></div>`;
                 }
                 html += `</li>`;
             });
             html += `</ol>`;
+
+            if (!showAll) {
+                html += `<button class="show-all-steps" id="show-all-steps">Mostra tutti i ${totalSteps} passaggi</button>`;
+            }
         }
         if (data.error) {
             html += `<p class="error"><strong>Errore:</strong> ${escapeHtml(data.error)}</p>`;
@@ -910,6 +979,17 @@ function initOpenAlpha() {
 
         resultContent.dataset.result = JSON.stringify(data);
         setupAzioni(data);
+
+        // Listener per "Mostra tutti i passaggi"
+        const showAllBtn = document.getElementById("show-all-steps");
+        if (showAllBtn) {
+            showAllBtn.addEventListener("click", () => {
+                document.querySelectorAll(".step-item").forEach((el) => {
+                    el.style.display = "";
+                });
+                showAllBtn.remove();
+            });
+        }
 
         if (window.MathJax && window.MathJax.typesetPromise) {
             window.MathJax.typesetPromise([resultContent]);
@@ -1171,14 +1251,24 @@ function initOpenAlpha() {
             .replace(/>/g, "&gt;");
     }
 
-    calculateButton.addEventListener("click", esegui);
-    inputField.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") esegui();
-    });
+    function isLatexLike(s) {
+        // Euristica: la stringa è "matematica" se contiene solo
+        // numeri, lettere, operatori, spazi, parentesi, ^, _, =, .
+        // Esclude etichette italiane comuni (es. "primo", "composto").
+        if (!s) return false;
+        const etichette = ["primo", "composto", "non primo", "Vero", "Falso"];
+        if (etichette.includes(s.trim())) return false;
+        return /^[\s0-9a-zA-Z+\-*/^_=().,]+$/.test(s);
+    }
 
     // ---------------------------------------------------------------------
     // Avvio
     // ---------------------------------------------------------------------
+
+    calculateButton.addEventListener("click", esegui);
+    inputField.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") esegui();
+    });
 
     caricaOperazioni();
     setupTastiera();

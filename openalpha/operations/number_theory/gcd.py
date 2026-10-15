@@ -22,6 +22,7 @@ from openalpha.core.exceptions import (
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.gcd import explain_gcd
 from openalpha.parser import parse_expression
 
 
@@ -57,6 +58,13 @@ def gcd(a: str, b: str) -> Result:
     if errore:
         return Result(**base, status=ResultStatus.ERROR, error=errore)
 
+    if valori[0] == 0 and valori[1] == 0:
+        return Result(
+            **base,
+            status=ResultStatus.ERROR,
+            error="il MCD di 0 e 0 non è definito",
+        )
+
     try:
         result = sympy.gcd(valori[0], valori[1])
     except Exception as exc:
@@ -70,4 +78,5 @@ def gcd(a: str, b: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_gcd(valori[0], valori[1]),
     )

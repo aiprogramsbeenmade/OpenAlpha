@@ -148,7 +148,7 @@ a una versione 2.0.
 ### Blocco 3 — Sommatorie, serie avanzate, trasformate ⬜
 
 - **T6.14** ⬜ `sum` / `product` (richiede estensione parser per range)
-- **T6.15** ⬜ `roots`
+- **T6.15** ✅ `roots` — radici di polinomi
 - **T6.16** ⬜ `laplace_transform` / `inverse_laplace`
 - **T6.17** ⬜ `fourier_transform`
 
@@ -185,6 +185,25 @@ a una versione 2.0.
 ### Blocco 9 — Geometria analitica (opzionale) ⬜
 
 - **T6.33** ⬜ `distance`, `line_equation`, `intersection`
+## Fase 7 — Spiegazioni numeriche ✅
+
+Obiettivo: ogni operazione numerica produce `steps` (lista di `Step`)
+che descrivono l'algoritmo passo-passo. Il frontend mostra max 5 step
++ un bottone "Mostra tutti".
+
+- **T7.1** ✅ Spiegazione di `factorint`
+- **T7.2** ✅ Spiegazione di `isprime`
+- **T7.3** ✅ Spiegazione di `gcd`
+- **T7.4** ✅ Spiegazione di `lcm`
+- **T7.5** ✅ Spiegazione di `divisors`
+- **T7.6** ✅ Spiegazione di `totient`
+- **T7.7** ✅ Spiegazione di `prime`
+- **T7.8** ✅ Spiegazione di `factorial`
+- **T7.9** ✅ Spiegazione di `combinations` / `permutations`
+- **T7.10** ✅ Spiegazione di `mod_inverse`
+
+**Risultato:** 815 test verdi. 10 operazioni con spiegazioni
+passo-passo. Il frontend mostra max 5 step con bottone "Mostra tutti".
 
 ### Rimandate a v2.0
 
@@ -196,9 +215,9 @@ a una versione 2.0.
 
 ## Stato attuale
 
-**Fase:** 6 — in corso.
-**Ultimo task chiuso:** T6.13 (blocco aritmetica di base)
-**Prossimo task:** Blocco 3 (sommatorie, serie avanzate, trasformate)
+**Fase:** 6 — in corso. Fase 7 — chiusa.
+**Ultimo task chiuso:** T7.10 (spiegazione di `mod_inverse`)
+**Prossimo task:** Blocco 3 della Fase 6 (`sum`/`product`, `roots` era già fatto)
 
 **Numeri:**
 - 664 test verdi.
@@ -251,6 +270,7 @@ a una versione 2.0.
 - **2026-10-15**: T6.6 (`dsolve`) completato. 594 test verdi.
 - **2026-10-15**: T6.7 (algebra) e T6.8 (teoria dei numeri) completati. 664 test verdi.
 - **2026-10-15**: T6.9–T6.13 (blocco aritmetica di base: `gcd`, `lcm`, `factorial`, `combinations`, `permutations`, `mod_inverse`, `round`, `floor`, `ceil`) completati. 742 test verdi.
+- **2026-10-15**: T7.2–T7.10 (spiegazioni di `isprime`, `gcd`, `lcm`, `divisors`, `totient`, `prime`, `factorial`, `combinations`, `permutations`, `mod_inverse`) completati. Fase 7 chiusa. 815 test verdi.
 - 
 ---
 
@@ -322,6 +342,28 @@ usato `builtins.<nome>` per riferirsi alla built-in, altrimenti si
 crea ricorsione infinita (es. `round.py` chiamava `round()` che
 chiamava se stessa). Questo è il motivo per cui `round.py` importa
 `builtins` e usa `builtins.round(...)`.
+
+### Spiegazioni numeriche (Fase 7)
+
+Pacchetto `openalpha/explanations/numeric/`. Ogni operazione numerica
+chiama una funzione `explain_<nome>(...) -> list[Step]` e passa il
+risultato al campo `steps` del `Result`.
+
+Operazioni con spiegazioni: `factorint`, `isprime`, `gcd`, `lcm`,
+`divisors`, `totient`, `prime`, `factorial`, `combinations`,
+`permutations`, `mod_inverse`.
+
+Il frontend:
+- Mostra max 5 step visibili + bottone "Mostra tutti i N passaggi".
+- Renderizza `step.before → step.after` con MathJax se sono
+  "latex-like" (euristica `isLatexLike` che esclude etichette
+  italiane come `primo`, `composto`), altrimenti testo monospace.
+- Non usa `data.latex.steps` (rimosso dal backend): gli step sono
+  resi direttamente dai campi `before`/`after`.
+
+**Nota sulle operazioni con `UNSUPPORTED`:** `mod_inverse` produce
+`steps` anche in caso di errore (spiega perché l'inverso non esiste).
+Le altre operazioni no.
 
 ---
 

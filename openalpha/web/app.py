@@ -254,6 +254,8 @@ def _execute_with_params(
         except (ValueError, TypeError):
             digits = 0
         return func(expression, digits=digits)
+    if operation == "roots":
+        return func(expression, var=params.get("var", "x"))
 
     return func(expression)
 
@@ -467,13 +469,9 @@ def create_app() -> Flask:
                 _try_latex(sol.split("=", 1)[1].strip()) if "=" in sol else _try_latex(sol)
                 for sol in result.solutions
             ],
-            "steps": [
-                {
-                    "before": _try_latex(step.before),
-                    "after": _try_latex(step.after),
-                }
-                for step in result.steps
-            ],
+            # Gli step non hanno LaTeX dal backend: il frontend
+            # usa step.before / step.after direttamente, con MathJax.
+            "steps": [],
         }
 
         return jsonify(serialized)

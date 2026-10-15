@@ -18,6 +18,7 @@ import sympy
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.permutations import explain_permutations
 from openalpha.operations.number_theory.gcd import _parse_interi
 
 
@@ -54,4 +55,5 @@ def permutations(n: str, k: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_permutations(n_int, k_int),
     )

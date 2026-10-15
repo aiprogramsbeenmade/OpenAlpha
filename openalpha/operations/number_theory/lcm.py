@@ -16,6 +16,7 @@ import sympy
 from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
+from openalpha.explanations.numeric.lcm import explain_lcm
 from openalpha.operations.number_theory.gcd import _parse_interi
 
 
@@ -51,4 +52,5 @@ def lcm(a: str, b: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact=str(result),
+        steps=explain_lcm(valori[0], valori[1]),
     )

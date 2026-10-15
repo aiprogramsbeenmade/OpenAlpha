@@ -23,6 +23,7 @@ from openalpha.core.registry import register
 from openalpha.core.result import Result
 from openalpha.core.status import ResultStatus
 from openalpha.parser import parse_expression
+from openalpha.explanations.numeric.isprime import explain_isprime
 
 
 @register(
@@ -62,6 +63,7 @@ def isprime(expression: str) -> Result:
         **base,
         status=ResultStatus.EXACT,
         exact="True" if result else "False",
+        steps=explain_isprime(int(expr)),
         metadata={
             "latex_exact": "\\text{Vero}" if result else "\\text{Falso}",
         },
