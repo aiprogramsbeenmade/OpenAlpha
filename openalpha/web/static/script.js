@@ -529,6 +529,51 @@ function initOpenAlpha() {
                 regex: /^\s*cancel\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
+                        {
+                name: "gcd",
+                regex: /^\s*gcd\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: { b: m[2] } }),
+            },
+            {
+                name: "lcm",
+                regex: /^\s*lcm\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: { b: m[2] } }),
+            },
+            {
+                name: "mod_inverse",
+                regex: /^\s*mod_inverse\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: { m: m[2] } }),
+            },
+            {
+                name: "combinations",
+                regex: /^\s*combinations\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: { k: m[2] } }),
+            },
+            {
+                name: "permutations",
+                regex: /^\s*permutations\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: { k: m[2] } }),
+            },
+            {
+                name: "factorial",
+                regex: /^\s*factorial\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "round",
+                regex: /^\s*round\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "floor",
+                regex: /^\s*floor\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "ceil",
+                regex: /^\s*ceil\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
         ];
 
         for (const p of patterns) {

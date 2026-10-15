@@ -31,3 +31,6 @@ from openalpha.operations.number_theory.factorint import factorint as _factorint
 from openalpha.operations.number_theory.isprime import isprime as _isprime  # noqa: F401
 from openalpha.operations.number_theory.prime import prime as _prime  # noqa: F401
 from openalpha.operations.number_theory.totient import totient as _totient  # noqa: F401
+from openalpha.operations.numeric.ceil import ceil as _ceil  # noqa: F401
+from openalpha.operations.numeric.floor import floor as _floor  # noqa: F401
+from openalpha.operations.numeric.round import round as _round  # noqa: F401

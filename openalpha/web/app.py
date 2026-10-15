@@ -238,6 +238,22 @@ def _execute_with_params(
         return func(expression, var=params.get("var", "x"))
     if operation == "collect":
         return func(expression, var=params.get("var", "x"))
+    if operation == "gcd":
+        return func(expression, params.get("b", "0"))
+    if operation == "lcm":
+        return func(expression, params.get("b", "0"))
+    if operation == "mod_inverse":
+        return func(expression, params.get("m", "1"))
+    if operation == "combinations":
+        return func(expression, params.get("k", "0"))
+    if operation == "permutations":
+        return func(expression, params.get("k", "0"))
+    if operation == "round":
+        try:
+            digits = int(params.get("digits", 0))
+        except (ValueError, TypeError):
+            digits = 0
+        return func(expression, digits=digits)
 
     return func(expression)
 
