@@ -282,6 +282,52 @@ def _execute_with_params(
             expression,
             vars=params.get("vars", ""),
         )
+    if operation == "sum":
+        return func(
+            expression,
+            var=params.get("var", "n"),
+            lower=params.get("lower", "1"),
+            upper=params.get("upper", "oo"),
+        )
+    if operation == "product":
+        return func(
+            expression,
+            var=params.get("var", "n"),
+            lower=params.get("lower", "1"),
+            upper=params.get("upper", "oo"),
+        )
+    if operation == "laplace_transform":
+        return func(
+            expression,
+            t=params.get("t", "t"),
+            s=params.get("s", "s"),
+        )
+    if operation == "inverse_laplace":
+        return func(
+            expression,
+            s=params.get("s", "s"),
+            t=params.get("t", "t"),
+        )
+    if operation == "fourier_transform":
+        return func(
+            expression,
+            x=params.get("x", "x"),
+            k=params.get("k", "k"),
+        )
+    if operation == "inverse_fourier_transform":
+        return func(
+            expression,
+            k=params.get("k", "k"),
+            x=params.get("x", "x"),
+        )
+    if operation == "degree":
+        return func(expression, var=params.get("var", "x"))
+    if operation == "coeff":
+        return func(
+            expression,
+            var=params.get("var", "x"),
+            n=params.get("n", "0"),
+        )
 
     return func(expression)
 

@@ -647,6 +647,72 @@ function initOpenAlpha() {
                 regex: /^\s*critical_points\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
+            {
+                name: "sum",
+                regex: /^\s*sum\s*\(\s*(.+?)\s*,\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: { var: m[2], lower: m[3], upper: m[4] },
+                }),
+            },
+            {
+                name: "product",
+                regex: /^\s*product\s*\(\s*(.+?)\s*,\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: { var: m[2], lower: m[3], upper: m[4] },
+                }),
+            },
+            {
+                name: "laplace_transform",
+                regex: /^\s*laplace_transform\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: (m[2] && m[3]) ? { t: m[2], s: m[3] } : {},
+                }),
+            },
+            {
+                name: "inverse_laplace",
+                regex: /^\s*inverse_laplace\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: (m[2] && m[3]) ? { s: m[2], t: m[3] } : {},
+                }),
+            },
+                        {
+                name: "fourier_transform",
+                regex: /^\s*fourier_transform\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: (m[2] && m[3]) ? { x: m[2], k: m[3] } : {},
+                }),
+            },
+            {
+                name: "inverse_fourier_transform",
+                regex: /^\s*inverse_fourier_transform\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: (m[2] && m[3]) ? { k: m[2], x: m[3] } : {},
+                }),
+            },
+                        {
+                name: "degree",
+                regex: /^\s*degree\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: m[2] ? { var: m[2] } : {},
+                }),
+            },
+            {
+                name: "coeff",
+                regex: /^\s*coeff\s*\(\s*(.+?)\s*(?:,\s*(\w+)\s*)?(?:,\s*(\d+)\s*)?\)\s*$/,
+                build: (m) => {
+                    const params = {};
+                    if (m[2]) params.var = m[2];
+                    if (m[3]) params.n = m[3];
+                    return { expression: m[1], params };
+                },
+            },
         ];
 
         for (const p of patterns) {

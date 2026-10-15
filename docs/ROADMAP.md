@@ -145,12 +145,13 @@ a una versione 2.0.
 - **T6.12** ✅ `mod_inverse`
 - **T6.13** ✅ `round` / `floor` / `ceil`
 
-### Blocco 3 — Sommatorie, serie avanzate, trasformate ⬜
+### Blocco 3 — Sommatorie, serie avanzate, trasformate ✅
 
-- **T6.14** ⬜ `sum` / `product` (richiede estensione parser per range)
-- **T6.15** ✅ `roots` — radici di polinomi
-- **T6.16** ⬜ `laplace_transform` / `inverse_laplace`
-- **T6.17** ⬜ `fourier_transform`
+- **T6.14** ✅ `sum` / `product`
+- **T6.15** ✅ `roots`
+- **T6.16** ✅ `laplace_transform` / `inverse_laplace`
+- **T6.17** ✅ `fourier_transform` / `inverse_fourier_transform`
+- **T6.18** ⬜ `convergence` (rimandato)
 
 ### Blocco 4 — Statistica e probabilità ⬜
 
@@ -210,14 +211,20 @@ passo-passo. Il frontend mostra max 5 step con bottone "Mostra tutti".
 - Linguaggio naturale (parsing di richieste in italiano/inglese)
 - Integrazione AI locale
 - API REST pubblica
+- **Particolarità matematiche**:
+  - Somma di Ramanujan (`1 + 2 + 3 + ... = -1/12`)
+  - Funzione zeta di Riemann (`zeta(s)`)
+  - Regolarizzazioni di serie divergenti
+  - Funzioni speciali (Gamma, Bessel, ecc.)
+  - Costanti speciali (Eulero-Mascheroni, ecc.)
 
 ---
 
 ## Stato attuale
 
-**Fase:** 6 — in corso (Blocco 1, 2, 5 completati). Fase 7 — chiusa.
-**Ultimo task chiuso:** T6.20
-**Prossimo task:** Blocco 3 (`sum`/`product`) o quello che decidiamo
+**Fase:** 6 — in corso (Blocchi 1, 2, 3, 5 completati). Fase 7 — chiusa.
+**Ultimo task chiuso:** T6.26
+**Prossimo task:** da decidere (algebra lineare? geometria? altro?)
 
 **Numeri:**
 - 664 test verdi.
@@ -272,6 +279,7 @@ passo-passo. Il frontend mostra max 5 step con bottone "Mostra tutti".
 - **2026-10-15**: T6.9–T6.13 (blocco aritmetica di base: `gcd`, `lcm`, `factorial`, `combinations`, `permutations`, `mod_inverse`, `round`, `floor`, `ceil`) completati. 742 test verdi.
 - **2026-10-15**: T7.2–T7.10 (spiegazioni di `isprime`, `gcd`, `lcm`, `divisors`, `totient`, `prime`, `factorial`, `combinations`, `permutations`, `mod_inverse`) completati. Fase 7 chiusa. 815 test verdi.
 - **2026-10-15**: T6.20 (`diff_partial`, `gradient`, `hessian`, `critical_points`) completato. Blocco 5 chiuso. 853 test verdi.
+- **2026-10-15**: T6.14 (`sum`/`product`), T6.24 (`laplace_transform`/`inverse_laplace`), T6.25 (`fourier_transform`/`inverse_fourier_transform`), T6.26 (`degree`/`coeff`) completati. 918 test verdi.
 - 
 ---
 
@@ -366,13 +374,34 @@ Il frontend:
 `steps` anche in caso di errore (spiega perché l'inverso non esiste).
 Le altre operazioni no.
 
+### Operazioni con risultati "speciali"
+
+Alcune operazioni gestiscono casi speciali che SymPy non risolve
+automaticamente:
+
+- **`fourier_transform`**: se `expr.is_constant()`, restituisce
+  `expr * DiracDelta(k)` (regolarizzazione nel senso delle
+  distribuzioni). Per il resto, se SymPy restituisce un oggetto
+  `FourierTransform` non valutato, la risposta è `UNSUPPORTED`.
+
+- **`sum` / `product`**: se SymPy restituisce un `Sum` / `Product`
+  non valutato, la risposta è `UNSUPPORTED`.
+
+- **`mod_inverse`**: se l'inverso non esiste (gcd ≠ 1), la risposta
+  è `UNSUPPORTED` con `steps` che spiegano il perché.
+
+- **`dsolve`**: la sintassi naturale `y'`, `y''`, `dy/dx` è parsata
+  da `dsolve.py` (non dal parser condiviso). Il parser è stato
+  esteso con `allow_functions=True` per le funzioni incognite.
+
+
 ---
 
 ## Inventario operazioni
 
 Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
-**Contatori:** 38 implementate · 27 pianificate · 65 totali
+**Contatori:** 46 implementate · 19 pianificate · 65 totali
 
 **Nota:** `taylor` è coperto da `series` (stessa operazione SymPy).
 Non è contato separatamente.
@@ -393,8 +422,8 @@ Non è contato separatamente.
 | 10 | `lcm_poly` | ⬜ | mcm di polinomi |
 | 11 | `div_poly` | ⬜ | Divisione polinomiale |
 | 12 | `rem_poly` | ⬜ | Resto polinomiale |
-| 13 | `degree` | ⬜ | Grado di un polinomio |
-| 14 | `coeff` | ⬜ | Coefficienti |
+| 13 | `degree` | ✅ | Grado di un polinomio |
+| 14 | `coeff` | ✅ | Coefficienti |
 
 ### Equazioni e sistemi
 
@@ -441,17 +470,18 @@ Non è contato separatamente.
 
 | # | Operazione | Stato | Note |
 |---|-----------|-------|------|
-| 31 | `laplace_transform` | ⬜ | |
-| 32 | `inverse_laplace` | ⬜ | |
-| 33 | `fourier_transform` | ⬜ | |
+| 31 | `laplace_transform` | ✅ | |
+| 32 | `inverse_laplace` | ✅ | |
+| 33 | `fourier_transform` | ✅ | |
+| 34 | `inverse_fourier_transform` | ✅ | |
 
 ### Serie e successioni
 
 | # | Operazione | Stato | Note |
 |---|-----------|-------|------|
-| 34 | `sum` | ⬜ | Sommatorie |
-| 35 | `product` | ⬜ | Produttorie |
-| 36 | `convergence` | ⬜ | Criteri di convergenza |
+| 35 | `sum` | ✅ | Sommatorie |
+| 36 | `product` | ✅ | Produttorie |
+| 37 | `convergence` | ⬜ | Criteri di convergenza |
 
 ### Algebra lineare
 

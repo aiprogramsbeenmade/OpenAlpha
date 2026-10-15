@@ -39,3 +39,11 @@ from openalpha.operations.calculus.diff_partial import diff_partial as _diff_par
 from openalpha.operations.calculus.gradient import gradient as _gradient  # noqa: F401
 from openalpha.operations.calculus.hessian import hessian as _hessian  # noqa: F401
 from openalpha.operations.calculus.critical_points import critical_points as _critical_points  # noqa: F401
+from openalpha.operations.calculus.product import product as _product  # noqa: F401
+from openalpha.operations.calculus.sum import sum as _sum  # noqa: F401
+from openalpha.operations.calculus.inverse_laplace import inverse_laplace as _inverse_laplace  # noqa: F401
+from openalpha.operations.calculus.laplace_transform import laplace_transform as _laplace_transform  # noqa: F401
+from openalpha.operations.calculus.fourier_transform import fourier_transform as _fourier_transform  # noqa: F401
+from openalpha.operations.calculus.inverse_fourier_transform import inverse_fourier_transform as _inverse_fourier_transform  # noqa: F401
+from openalpha.operations.algebra.coeff import coeff as _coeff  # noqa: F401
+from openalpha.operations.algebra.degree import degree as _degree  # noqa: F401
