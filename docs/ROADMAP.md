@@ -157,9 +157,9 @@ a una versione 2.0.
 - **T6.18** ⬜ `mean`, `median`, `std`, `var` (richiede liste)
 - **T6.19** ⬜ `crt` — teorema cinese
 
-### Blocco 5 — Calcolo avanzato ⬜
+### Blocco 5 — Calcolo avanzato 🚧
 
-- **T6.20** ⬜ `diff_partial`, `gradient`, `hessian`, `critical_points`
+- **T6.20** ✅ `diff_partial`, `gradient`, `hessian`, `critical_points`
 - **T6.21** ⬜ `integrate_multiple`
 - **T6.22** ⬜ `limit_sequence`
 - **T6.23** ⬜ `convergence`
@@ -215,9 +215,9 @@ passo-passo. Il frontend mostra max 5 step con bottone "Mostra tutti".
 
 ## Stato attuale
 
-**Fase:** 6 — in corso. Fase 7 — chiusa.
-**Ultimo task chiuso:** T7.10 (spiegazione di `mod_inverse`)
-**Prossimo task:** Blocco 3 della Fase 6 (`sum`/`product`, `roots` era già fatto)
+**Fase:** 6 — in corso (Blocco 1, 2, 5 completati). Fase 7 — chiusa.
+**Ultimo task chiuso:** T6.20
+**Prossimo task:** Blocco 3 (`sum`/`product`) o quello che decidiamo
 
 **Numeri:**
 - 664 test verdi.
@@ -271,6 +271,7 @@ passo-passo. Il frontend mostra max 5 step con bottone "Mostra tutti".
 - **2026-10-15**: T6.7 (algebra) e T6.8 (teoria dei numeri) completati. 664 test verdi.
 - **2026-10-15**: T6.9–T6.13 (blocco aritmetica di base: `gcd`, `lcm`, `factorial`, `combinations`, `permutations`, `mod_inverse`, `round`, `floor`, `ceil`) completati. 742 test verdi.
 - **2026-10-15**: T7.2–T7.10 (spiegazioni di `isprime`, `gcd`, `lcm`, `divisors`, `totient`, `prime`, `factorial`, `combinations`, `permutations`, `mod_inverse`) completati. Fase 7 chiusa. 815 test verdi.
+- **2026-10-15**: T6.20 (`diff_partial`, `gradient`, `hessian`, `critical_points`) completato. Blocco 5 chiuso. 853 test verdi.
 - 
 ---
 
@@ -371,7 +372,7 @@ Le altre operazioni no.
 
 Stato: ✅ implementata · 🚧 in corso · ⬜ da fare · ⏸️ sospesa
 
-**Contatori:** 33 implementate · 32 pianificate · 65 totali
+**Contatori:** 38 implementate · 27 pianificate · 65 totali
 
 **Nota:** `taylor` è coperto da `series` (stessa operazione SymPy).
 Non è contato separatamente.
@@ -409,11 +410,11 @@ Non è contato separatamente.
 | # | Operazione | Stato | Note |
 |---|-----------|-------|------|
 | 19 | `diff` | ✅ | |
-| 20 | `diff_partial` | ⬜ | Derivate parziali |
-| 21 | `gradient` | ⬜ | |
-| 22 | `hessian` | ⬜ | |
+| 20 | `diff_partial` | ✅ | Derivate parziali |
+| 21 | `gradient` | ✅ | |
+| 22 | `hessian` | ✅ | |
 | 23 | `series` | ✅ | Sviluppo in serie (Taylor, Maclaurin) |
-| 24 | `critical_points` | ⬜ | Punti critici |
+| 24 | `critical_points` | ✅ | Punti critici |
 
 ### Calcolo integrale
 

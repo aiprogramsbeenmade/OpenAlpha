@@ -257,6 +257,32 @@ def _execute_with_params(
     if operation == "roots":
         return func(expression, var=params.get("var", "x"))
 
+    if operation == "diff_partial":
+        try:
+            order = int(params.get("order", 1))
+        except (ValueError, TypeError):
+            order = 1
+        return func(
+            expression,
+            var=params.get("var", "x"),
+            order=order,
+        )
+    if operation == "gradient":
+        return func(
+            expression,
+            vars=params.get("vars", ""),
+        )
+    if operation == "hessian":
+        return func(
+            expression,
+            vars=params.get("vars", ""),
+        )
+    if operation == "critical_points":
+        return func(
+            expression,
+            vars=params.get("vars", ""),
+        )
+
     return func(expression)
 
 def _genera_dati_plot2d(

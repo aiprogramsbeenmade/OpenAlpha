@@ -624,6 +624,29 @@ function initOpenAlpha() {
                 regex: /^\s*ceil\s*\(\s*(.+?)\s*\)\s*$/,
                 build: (m) => ({ expression: m[1], params: {} }),
             },
+                        {
+                name: "diff_partial",
+                regex: /^\s*diff_partial\s*\(\s*(.+?)\s*,\s*(\w+)\s*(?:,\s*(\d+)\s*)?\)\s*$/,
+                build: (m) => ({
+                    expression: m[1],
+                    params: { var: m[2], order: m[3] ? parseInt(m[3], 10) : 1 },
+                }),
+            },
+            {
+                name: "gradient",
+                regex: /^\s*gradient\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "hessian",
+                regex: /^\s*hessian\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
+            {
+                name: "critical_points",
+                regex: /^\s*critical_points\s*\(\s*(.+?)\s*\)\s*$/,
+                build: (m) => ({ expression: m[1], params: {} }),
+            },
         ];
 
         for (const p of patterns) {

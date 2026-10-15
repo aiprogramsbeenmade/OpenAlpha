@@ -35,3 +35,7 @@ from openalpha.operations.numeric.ceil import ceil as _ceil  # noqa: F401
 from openalpha.operations.numeric.floor import floor as _floor  # noqa: F401
 from openalpha.operations.numeric.round import round as _round  # noqa: F401
 from openalpha.operations.algebra import roots as _roots  # noqa: F401
+from openalpha.operations.calculus.diff_partial import diff_partial as _diff_partial  # noqa: F401
+from openalpha.operations.calculus.gradient import gradient as _gradient  # noqa: F401
+from openalpha.operations.calculus.hessian import hessian as _hessian  # noqa: F401
+from openalpha.operations.calculus.critical_points import critical_points as _critical_points  # noqa: F401
